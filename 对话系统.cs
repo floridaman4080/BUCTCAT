@@ -12,7 +12,7 @@ public class 对话系统 : MonoBehaviour
 
     [TextArea(1, 3)]
     public string[] dialogueLines;
-    [SerializeField] private int currentLine;
+    public int currentLine;
     [SerializeField] private float textTime = 0.1f;
     public bool isStart;
     private bool isScrolling;
