@@ -5,25 +5,25 @@ using UnityEngine;
 public class Talkable : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField] private bool isEntered = false;
+    // [SerializeField] private bool isEntered = false;
     [TextArea(1, 3)]
     public string[] lines;
     private bool isStartDialogue = false;
     [SerializeField] private bool hasName = false;
-    private void OnTriggerEnter2D(Collider2D other0)
-    {
-        if (other0.CompareTag("Player"))
-        {
-            isEntered = true;
-        }
-    }
-    private void OnTriggerExit2D(Collider2D other0)
-    {
-        if (other0.CompareTag("Player"))
-        {
-            isEntered = false;
-        }
-    }
+    // private void OnTriggerEnter2D(Collider2D other0)
+    // {
+    //     if (other0.CompareTag("Player"))
+    //     {
+    //         isEntered = true;
+    //     }
+    // }
+    // private void OnTriggerExit2D(Collider2D other0)
+    // {
+    //     if (other0.CompareTag("Player"))
+    //     {
+    //         isEntered = false;
+    //     }
+    // }
     void Start()
     {
 

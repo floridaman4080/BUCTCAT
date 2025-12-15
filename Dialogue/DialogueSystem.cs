@@ -17,7 +17,7 @@ public enum DialogueNodeType
 }
 
 /// <summary>
-/// 对话条件类型
+/// 对话条件类型IsDialogueActive
 /// </summary>
 public enum ConditionType
 {
@@ -52,6 +52,16 @@ public class DialogueChoice
 }
 
 /// <summary>
+/// 节点触发的Bool设置
+/// </summary>
+[Serializable]
+public class DialogueBoolSetter
+{
+    public string boolName;         // Bool的名称/键
+    public bool setValue = true;    // 设置为什么值
+}
+
+/// <summary>
 /// 对话节点
 /// </summary>
 [Serializable]
@@ -67,6 +77,10 @@ public class DialogueNode
     [Header("进度控制")]
     public bool isCheckpoint = false;       // 是否是检查点（下次对话从这里开始）
     public int resumeNodeId = -1;           // 如果设置了，下次对话会从这个节点开始（-1表示使用当前节点）
+
+    [Header("Bool 触发器")]
+    public List<DialogueBoolSetter> onEnterSetBools = new List<DialogueBoolSetter>();  // 进入节点时设置的Bool
+    public List<DialogueBoolSetter> onExitSetBools = new List<DialogueBoolSetter>();   // 离开节点时设置的Bool
 
     // 普通对话 - 下一个节点ID（-1表示对话结束）
     public int nextNodeId = -1;
@@ -139,6 +153,12 @@ public class DialogueSystem : MonoBehaviour
     // 对话检查点 - 记录特定的"存档点"节点
     private Dictionary<string, HashSet<int>> dialogueCheckpoints = new Dictionary<string, HashSet<int>>();
 
+    // ★ 对话完成状态 - 记录每个对话是否已完成
+    private static Dictionary<string, bool> dialogueCompleted = new Dictionary<string, bool>();
+
+    // ★ 全局 Bool 存储 - 可以被任何脚本访问
+    private static Dictionary<string, bool> globalBools = new Dictionary<string, bool>();
+
     // 条件检查委托
     public Func<string, int> GetItemCount;      // 获取道具数量
     public Func<string, bool> HasFlag;          // 检查标记
@@ -149,6 +169,8 @@ public class DialogueSystem : MonoBehaviour
     public event Action OnDialogueEnd;
     public event Action<DialogueNode> OnNodeChanged;
     public event Action<DialogueChoice> OnChoiceMade;
+    public event Action<string> OnDialogueCompleted;  // ★ 对话完成事件，参数是对话ID
+    public static event Action<string, bool> OnBoolChanged;  // ★ Bool变化事件
 
     private void Awake()
     {
@@ -349,6 +371,18 @@ public class DialogueSystem : MonoBehaviour
             Debug.Log($"[对话系统] ★ 检查点保存！对话 '{dialogueKey}' 下次将从节点 {saveNodeId} 开始");
         }
 
+        // ★ 进入节点时设置 Bool
+        if (currentNode.onEnterSetBools != null)
+        {
+            foreach (var boolSetter in currentNode.onEnterSetBools)
+            {
+                if (!string.IsNullOrEmpty(boolSetter.boolName))
+                {
+                    SetBool(boolSetter.boolName, boolSetter.setValue);
+                }
+            }
+        }
+
         // 触发进入节点事件
         currentNode.onNodeEnter?.Invoke();
         OnNodeChanged?.Invoke(currentNode);
@@ -513,6 +547,9 @@ public class DialogueSystem : MonoBehaviour
         choice.onChoiceSelected?.Invoke();
         OnChoiceMade?.Invoke(choice);
 
+        // ★ 离开节点时设置 Bool
+        ApplyExitBools();
+
         currentNode.onNodeExit?.Invoke();
         DisplayNode(choice.nextNodeId);
     }
@@ -556,6 +593,9 @@ public class DialogueSystem : MonoBehaviour
                 return;
         }
 
+        // ★ 离开节点时设置 Bool
+        ApplyExitBools();
+
         currentNode.onNodeExit?.Invoke();
 
         if (nextId < 0)
@@ -565,6 +605,23 @@ public class DialogueSystem : MonoBehaviour
         else
         {
             DisplayNode(nextId);
+        }
+    }
+
+    /// <summary>
+    /// 应用离开节点时的 Bool 设置
+    /// </summary>
+    private void ApplyExitBools()
+    {
+        if (currentNode != null && currentNode.onExitSetBools != null)
+        {
+            foreach (var boolSetter in currentNode.onExitSetBools)
+            {
+                if (!string.IsNullOrEmpty(boolSetter.boolName))
+                {
+                    SetBool(boolSetter.boolName, boolSetter.setValue);
+                }
+            }
         }
     }
 
@@ -646,21 +703,29 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 跳过打字效果
+    /// 跳过打字效果，立即显示完整文本
     /// </summary>
     private void SkipTyping()
     {
+        if (!isTyping) return;  // 如果没有在打字，直接返回
+
+        // 先设置标志，防止重复调用
+        isTyping = false;
+
+        // 停止打字协程
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
         }
 
+        // 立即显示完整文本
         if (dialogueText != null && currentNode != null)
         {
             dialogueText.text = currentNode.dialogueText;
         }
 
-        isTyping = false;
+        Debug.Log("[对话系统] 跳过打字效果，显示完整文本");
     }
 
     /// <summary>
@@ -668,6 +733,18 @@ public class DialogueSystem : MonoBehaviour
     /// </summary>
     public void EndDialogue()
     {
+        // ★ 记录对话已完成
+        if (currentDialogue != null)
+        {
+            string dialogueKey = GetDialogueKey(currentDialogue);
+            if (!string.IsNullOrEmpty(dialogueKey))
+            {
+                dialogueCompleted[dialogueKey] = true;
+                Debug.Log($"[对话系统] 对话完成: {dialogueKey}");
+                OnDialogueCompleted?.Invoke(dialogueKey);
+            }
+        }
+
         isDialogueActive = false;
         currentDialogue = null;
         currentNode = null;
@@ -695,5 +772,130 @@ public class DialogueSystem : MonoBehaviour
     {
         if (!isDialogueActive) return;
         DisplayNode(nodeId);
+    }
+
+    // ================= 对话完成状态相关方法 =================
+
+    /// <summary>
+    /// 检查指定对话是否已完成
+    /// </summary>
+    /// <param name="dialogueId">对话ID（DialogueData 的 dialogueId 或资源名）</param>
+    /// <returns>是否已完成</returns>
+    public static bool IsDialogueCompleted(string dialogueId)
+    {
+        return dialogueCompleted.ContainsKey(dialogueId) && dialogueCompleted[dialogueId];
+    }
+
+    /// <summary>
+    /// 检查指定对话数据是否已完成
+    /// </summary>
+    public bool IsDialogueCompleted(DialogueData dialogue)
+    {
+        if (dialogue == null) return false;
+        string key = GetDialogueKey(dialogue);
+        return IsDialogueCompleted(key);
+    }
+
+    /// <summary>
+    /// 手动设置对话完成状态
+    /// </summary>
+    public static void SetDialogueCompleted(string dialogueId, bool completed = true)
+    {
+        dialogueCompleted[dialogueId] = completed;
+        Debug.Log($"[对话系统] 设置对话状态: {dialogueId} = {completed}");
+    }
+
+    /// <summary>
+    /// 重置指定对话的完成状态
+    /// </summary>
+    public static void ResetDialogueCompleted(string dialogueId)
+    {
+        if (dialogueCompleted.ContainsKey(dialogueId))
+        {
+            dialogueCompleted.Remove(dialogueId);
+            Debug.Log($"[对话系统] 重置对话状态: {dialogueId}");
+        }
+    }
+
+    /// <summary>
+    /// 重置所有对话的完成状态
+    /// </summary>
+    public static void ResetAllDialogueCompleted()
+    {
+        dialogueCompleted.Clear();
+        Debug.Log("[对话系统] 重置所有对话状态");
+    }
+
+    /// <summary>
+    /// 获取所有已完成的对话ID列表
+    /// </summary>
+    public static List<string> GetCompletedDialogues()
+    {
+        List<string> completed = new List<string>();
+        foreach (var pair in dialogueCompleted)
+        {
+            if (pair.Value)
+                completed.Add(pair.Key);
+        }
+        return completed;
+    }
+
+    // ================= 全局 Bool 相关方法 =================
+
+    /// <summary>
+    /// 设置一个 Bool 值（静态方法，任何地方都能调用）
+    /// </summary>
+    public static void SetBool(string boolName, bool value)
+    {
+        globalBools[boolName] = value;
+        Debug.Log($"[对话系统] 设置 Bool: {boolName} = {value}");
+        OnBoolChanged?.Invoke(boolName, value);
+    }
+
+    /// <summary>
+    /// 获取一个 Bool 值（静态方法，任何地方都能调用）
+    /// </summary>
+    public static bool GetBool(string boolName, bool defaultValue = false)
+    {
+        if (globalBools.ContainsKey(boolName))
+            return globalBools[boolName];
+        return defaultValue;
+    }
+
+    /// <summary>
+    /// 检查某个 Bool 是否存在
+    /// </summary>
+    public static bool HasBool(string boolName)
+    {
+        return globalBools.ContainsKey(boolName);
+    }
+
+    /// <summary>
+    /// 删除一个 Bool
+    /// </summary>
+    public static void RemoveBool(string boolName)
+    {
+        if (globalBools.ContainsKey(boolName))
+        {
+            globalBools.Remove(boolName);
+            Debug.Log($"[对话系统] 删除 Bool: {boolName}");
+        }
+    }
+
+    /// <summary>
+    /// 清除所有 Bool
+    /// </summary>
+    public static void ClearAllBools()
+    {
+        globalBools.Clear();
+        Debug.Log("[对话系统] 清除所有 Bool");
+    }
+
+    /// <summary>
+    /// 获取所有 Bool（用于存档等）
+    /// </summary>
+    public static Dictionary<string, bool> GetAllBools()
+    {
+        return new Dictionary<string, bool>(globalBools);
     }
 }

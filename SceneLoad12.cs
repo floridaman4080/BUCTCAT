@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoad : MonoBehaviour
+public class SceneLoad12 : MonoBehaviour
 {
     // Start is called before the first frame update
+    [SerializeField] private GameObject cat;
     public Animator transition;
     void Start()
     {
@@ -15,30 +16,34 @@ public class SceneLoad : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool shouldLoadFromMuseum = ç¢°æ’æ ¡å²é¦†.instance != null && ç¢°æ’æ ¡å²é¦†.instance.isTouchMuseum;
+        bool shouldLoadFromMuseum = Åö×²Ğ£Ê·¹İ.instance != null && Åö×²Ğ£Ê·¹İ.instance.isTouchMuseum;
         bool shouldLoadFromDoor = Door.instance != null && Door.instance.isfubeng1;
 
         if (transition != null && (shouldLoadFromMuseum || shouldLoadFromDoor))
         {
             LoadNextScene();
 
-            // å®‰å…¨åœ°é‡ç½®çŠ¶æ€
-            if (ç¢°æ’æ ¡å²é¦†.instance != null)
+            // °²È«µØÖØÖÃ×´Ì¬
+            if (Åö×²Ğ£Ê·¹İ.instance != null)
             {
-                ç¢°æ’æ ¡å²é¦†.instance.isTouchMuseum = false;
+                Åö×²Ğ£Ê·¹İ.instance.isTouchMuseum = false;
+
+
             }
             if (Door.instance != null)
             {
                 Door.instance.isfubeng1 = false;
+                cat.SetActive(false);
             }
         }
+
     }
-    public void LoadNextScene()
+    private void LoadNextScene()
     {
         StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex + 1));
 
     }
-    public IEnumerator LoadLevel(int levelIndex)
+    private IEnumerator LoadLevel(int levelIndex)
     {
         transition.SetTrigger("SceneLoadFinish");
         yield return new WaitForSeconds(2f);

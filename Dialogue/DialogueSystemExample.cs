@@ -213,3 +213,141 @@ public class DialogueSystemExample : MonoBehaviour
 /// NPC对话触发器
 /// 挂载到NPC上，玩家进入触发区域后可以开始对话
 /// </summary>
+public class NPCDialogueTrigger : MonoBehaviour
+{
+    [Header("对话设置")]
+    [Tooltip("NPC的对话数据")]
+    public DialogueData dialogueData;
+
+    [Tooltip("起始节点索引（0表示第一个节点）")]
+    public int startNodeIndex = 0;
+
+    [Header("交互设置")]
+    [Tooltip("交互按键")]
+    public KeyCode interactKey = KeyCode.E;
+
+    [Tooltip("交互提示UI（可选）")]
+    public GameObject interactHint;
+
+    [Header("触发设置")]
+    [Tooltip("是否使用2D触发器")]
+    public bool use2DTrigger = true;
+
+    private bool playerInRange = false;
+
+    private void Start()
+    {
+        // 初始隐藏交互提示
+        if (interactHint != null)
+        {
+            interactHint.SetActive(false);
+        }
+    }
+
+    private void Update()
+    {
+        // 玩家在范围内且按下交互键
+        if (playerInRange && Input.GetKeyDown(interactKey))
+        {
+            TryStartDialogue();
+        }
+    }
+
+    private void TryStartDialogue()
+    {
+        if (dialogueData == null)
+        {
+            Debug.LogWarning($"[{gameObject.name}] 没有设置对话数据！");
+            return;
+        }
+
+        if (DialogueSystem.Instance == null)
+        {
+            Debug.LogWarning("DialogueSystem实例不存在！");
+            return;
+        }
+
+        // 如果当前没有对话进行中，开始新对话
+        if (!DialogueSystem.Instance.IsDialogueActive())
+        {
+            DialogueSystem.Instance.StartDialogue(dialogueData, startNodeIndex);
+
+            // 开始对话后隐藏交互提示
+            if (interactHint != null)
+            {
+                interactHint.SetActive(false);
+            }
+        }
+    }
+
+    // ========== 3D触发器 ==========
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!use2DTrigger && other.CompareTag("Player"))
+        {
+            PlayerEnterRange();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!use2DTrigger && other.CompareTag("Player"))
+        {
+            PlayerExitRange();
+        }
+    }
+
+    // ========== 2D触发器 ==========
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (use2DTrigger && other.CompareTag("Player"))
+        {
+            PlayerEnterRange();
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (use2DTrigger && other.CompareTag("Player"))
+        {
+            PlayerExitRange();
+        }
+    }
+
+    // ========== 进入/离开范围处理 ==========
+    private void PlayerEnterRange()
+    {
+        playerInRange = true;
+
+        // 显示交互提示
+        if (interactHint != null)
+        {
+            interactHint.SetActive(true);
+        }
+
+        Debug.Log($"可以与 {gameObject.name} 对话，按 {interactKey} 键开始");
+    }
+
+    private void PlayerExitRange()
+    {
+        playerInRange = false;
+
+        // 隐藏交互提示
+        if (interactHint != null)
+        {
+            interactHint.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// 检查这个NPC的对话是否已完成
+    /// </summary>
+    public bool IsDialogueCompleted()
+    {
+        if (dialogueData != null && DialogueSystem.Instance != null)
+        {
+            return DialogueSystem.Instance.IsDialogueCompleted(dialogueData);
+        }
+        return false;
+    }
+}

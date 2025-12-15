@@ -10,10 +10,15 @@ public class move : MonoBehaviour
     private float xInput;
     private Animator anim;
     private Rigidbody2D rb;
-    [SerializeField] private float 固定速度 = 5f;
+    [SerializeField] private float 固定速度 = 2f;
     [SerializeField] private float 延迟停下 = 4f;
     [SerializeField] private float 延迟继续 = 4f;
+    [SerializeField] private float 跳跃力 = 8f;
+    [SerializeField] private LayerMask 地面层;
+    [SerializeField] private Transform 地面检测点;
+    [SerializeField] private float 地面检测半径 = 0.2f;
     public bool canMove = true;
+    private bool isGrounded;
     private void Awake()
     {
         if (instance == null)
@@ -32,12 +37,14 @@ public class move : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-        FlipOnce();
+        // FlipOnce();
     }
 
     void Update()
     {
-        //CheckInput();
+        CheckGrounded();
+        // CheckJumpInput();
+
         if (canMove)
         {
             AnimatorController();
@@ -49,6 +56,33 @@ public class move : MonoBehaviour
             rb.velocity = new Vector2(0, rb.velocity.y);
         }
     }
+
+    private void CheckGrounded()
+    {
+        if (地面检测点 != null)
+        {
+            isGrounded = Physics2D.OverlapCircle(地面检测点.position, 地面检测半径, 地面层);
+        }
+        else
+        {
+            // 如果没有设置地面检测点，使用角色底部位置
+            isGrounded = Physics2D.OverlapCircle(transform.position, 地面检测半径, 地面层);
+        }
+    }
+
+    private void CheckJumpInput()
+    {
+        if (canMove && isGrounded && Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
+    }
+
+    private void Jump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, 跳跃力);
+        anim.SetTrigger("Jump");
+    }
     private void CheckInput()
     {
         xInput = Input.GetAxis("Horizontal");
@@ -57,6 +91,8 @@ public class move : MonoBehaviour
     {
         bool IsMove = rb.velocity.x != 0;
         anim.SetBool("IsMove", IsMove);
+        anim.SetBool("IsGrounded", isGrounded);
+        anim.SetFloat("VelocityY", rb.velocity.y);
     }
     private void Movement()
     {
@@ -100,5 +136,19 @@ public class move : MonoBehaviour
         yield return new WaitForSeconds(延迟继续);
         canMove = true;
         Debug.Log("继续运动");
+    }
+
+    // 在Scene视图中绘制地面检测范围（方便调试）
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        if (地面检测点 != null)
+        {
+            Gizmos.DrawWireSphere(地面检测点.position, 地面检测半径);
+        }
+        else
+        {
+            Gizmos.DrawWireSphere(transform.position, 地面检测半径);
+        }
     }
 }
