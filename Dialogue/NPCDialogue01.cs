@@ -12,42 +12,38 @@ public class NPCDialogue01 : MonoBehaviour
     [SerializeField] private int startNodeId = 0;
 
     [Header("交互设置")]
-    [SerializeField] private KeyCode interactKey = KeyCode.E;
-    [SerializeField] private GameObject interactHint; // "按E对话" 提示UI
+    // [SerializeField] private KeyCode interactKey = KeyCode.E;
+    [SerializeField] private GameObject interactHint; // "偷听" 提示UI
     [SerializeField] private GameObject target;
     private bool playerInRange = false;
+    private bool isListen;
     private bool isResume = false;
     [Header("Timeline 设置")]
     [Tooltip("拖入场景中的 PlayableDirector（Timeline播放器）")]
     [SerializeField] private PlayableDirector playableDirector;
 
-    // [Header("Timeline 设置")]
-    // [Tooltip("拖入场景中的 PlayableDirector（Timeline播放器）")]
-    // [SerializeField] private PlayableDirector playableDirector;
-
     void Start()
     {
         if (interactHint != null)
             interactHint.SetActive(false);
-
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (playerInRange && Input.GetKeyDown(interactKey) && isResume)
+        //如果玩家在范围内 按下了按钮 并且是在timeline之后
+        if (playerInRange && isListen && isResume)
         {
             if (DialogueSystem.Instance != null && !DialogueSystem.Instance.IsDialogueActive() && !DialogueSystem.GetBool("找回纸"))
             {
+                isListen = false;
                 DialogueSystem.Instance.StartDialogue(dialogue, startNodeId);
             }
-            // interactHint.SetActive(false);
         }
-        if (playableDirector != null && playableDirector.state == PlayState.Playing)
+        //对话中或者过场动画中不显示交互ui
+        if ((playableDirector != null && playableDirector.state == PlayState.Playing) || DialogueSystem.Instance.IsDialogueActive())
         {
             interactHint.SetActive(false);
-            Debug.Log("guanbi");
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
@@ -55,7 +51,8 @@ public class NPCDialogue01 : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            if (interactHint != null && !DialogueSystem.GetBool("找回纸"))
+            //只有碰到并且没有完成对话并且对话没有进行才会显示ui
+            if (interactHint != null && !DialogueSystem.GetBool("找回纸") && isResume && !DialogueSystem.Instance.IsDialogueActive())
             {
                 interactHint.SetActive(true);
             }
@@ -71,6 +68,8 @@ public class NPCDialogue01 : MonoBehaviour
                 interactHint.SetActive(false);
         }
     }
+
+    //判断是否完成timeline
     public void resumeDialogue01()
     {
         isResume = true;
@@ -88,9 +87,12 @@ public class NPCDialogue01 : MonoBehaviour
             collider.enabled = false;
             collider.enabled = true;
             // Debug.Log($"已关闭 {target.name} 的 BoxCollider2D");
-
-
         }
     }
 
+    //交互偷听
+    public void eavesdrop01()
+    {
+        isListen = true;
+    }
 }

@@ -7,99 +7,99 @@ using UnityEngine.Events;
 using TMPro;
 
 /// <summary>
-/// ¶Ô»°½ÚµãÀàĞÍ
+/// å¯¹è¯èŠ‚ç‚¹ç±»å‹
 /// </summary>
 public enum DialogueNodeType
 {
-    Normal,         // ÆÕÍ¨¶Ô»°
-    Conditional,    // Ìõ¼ş¶Ô»°£¨ĞèÒªµÀ¾ßµÈ£©
-    Choice          // ·ÖÖ§Ñ¡Ôñ¶Ô»°
+    Normal,         // æ™®é€šå¯¹è¯
+    Conditional,    // æ¡ä»¶å¯¹è¯ï¼ˆéœ€è¦é“å…·ç­‰ï¼‰
+    Choice          // åˆ†æ”¯é€‰æ‹©å¯¹è¯
 }
 
 /// <summary>
-/// ¶Ô»°Ìõ¼şÀàĞÍIsDialogueActive
+/// å¯¹è¯æ¡ä»¶ç±»å‹IsDialogueActive
 /// </summary>
 public enum ConditionType
 {
-    HasItem,        // ÓµÓĞµÀ¾ß
-    HasFlag,        // ÓµÓĞ±ê¼Ç£¨Íê³ÉÄ³ÈÎÎñµÈ£©
-    StatCheck       // ÊôĞÔ¼ì²é
+    HasItem,        // æ‹¥æœ‰é“å…·
+    HasFlag,        // æ‹¥æœ‰æ ‡è®°ï¼ˆå®ŒæˆæŸä»»åŠ¡ç­‰ï¼‰
+    StatCheck       // å±æ€§æ£€æŸ¥
 }
 
 /// <summary>
-/// ¶Ô»°Ìõ¼ş
+/// å¯¹è¯æ¡ä»¶
 /// </summary>
 [Serializable]
 public class DialogueCondition
 {
     public ConditionType conditionType;
-    public string conditionKey;     // µÀ¾ßID¡¢±ê¼ÇÃû»òÊôĞÔÃû
-    public int requiredValue = 1;   // ËùĞèÊıÁ¿»òÊıÖµ
-    public string failMessage = "Ìõ¼ş²»Âú×ã£¬ÎŞ·¨¼ÌĞø¶Ô»°¡£"; // Ìõ¼ş²»Âú×ãÊ±ÏÔÊ¾µÄÏûÏ¢
+    public string conditionKey;     // é“å…·IDã€æ ‡è®°åæˆ–å±æ€§å
+    public int requiredValue = 1;   // æ‰€éœ€æ•°é‡æˆ–æ•°å€¼
+    public string failMessage = "æ¡ä»¶ä¸æ»¡è¶³ï¼Œæ— æ³•ç»§ç»­å¯¹è¯ã€‚"; // æ¡ä»¶ä¸æ»¡è¶³æ—¶æ˜¾ç¤ºçš„æ¶ˆæ¯
 }
 
 /// <summary>
-/// ¶Ô»°Ñ¡Ïî
+/// å¯¹è¯é€‰é¡¹
 /// </summary>
 [Serializable]
 public class DialogueChoice
 {
-    public string choiceText;           // Ñ¡ÏîÎÄ±¾
-    public int nextNodeId;              // Ñ¡ÔñºóÌø×ªµÄ½ÚµãID
-    public DialogueCondition condition; // Ñ¡ÏîÌõ¼ş£¨¿ÉÑ¡£©
-    public bool hideIfConditionNotMet;  // Ìõ¼ş²»Âú×ãÊ±ÊÇ·ñÒş²ØÑ¡Ïî
-    public UnityEvent onChoiceSelected; // Ñ¡Ôñ´ËÑ¡ÏîÊ±´¥·¢µÄÊÂ¼ş
+    public string choiceText;           // é€‰é¡¹æ–‡æœ¬
+    public int nextNodeId;              // é€‰æ‹©åè·³è½¬çš„èŠ‚ç‚¹ID
+    public DialogueCondition condition; // é€‰é¡¹æ¡ä»¶ï¼ˆå¯é€‰ï¼‰
+    public bool hideIfConditionNotMet;  // æ¡ä»¶ä¸æ»¡è¶³æ—¶æ˜¯å¦éšè—é€‰é¡¹
+    public UnityEvent onChoiceSelected; // é€‰æ‹©æ­¤é€‰é¡¹æ—¶è§¦å‘çš„äº‹ä»¶
 }
 
 /// <summary>
-/// ½Úµã´¥·¢µÄBoolÉèÖÃ
+/// èŠ‚ç‚¹è§¦å‘çš„Boolè®¾ç½®
 /// </summary>
 [Serializable]
 public class DialogueBoolSetter
 {
-    public string boolName;         // BoolµÄÃû³Æ/¼ü
-    public bool setValue = true;    // ÉèÖÃÎªÊ²Ã´Öµ
+    public string boolName;         // Boolçš„åç§°/é”®
+    public bool setValue = true;    // è®¾ç½®ä¸ºä»€ä¹ˆå€¼
 }
 
 /// <summary>
-/// ¶Ô»°½Úµã
+/// å¯¹è¯èŠ‚ç‚¹
 /// </summary>
 [Serializable]
 public class DialogueNode
 {
-    public int nodeId;                      // ½ÚµãID
-    public string speakerName;              // Ëµ»°ÕßÃû³Æ
+    public int nodeId;                      // èŠ‚ç‚¹ID
+    public string speakerName;              // è¯´è¯è€…åç§°
     [TextArea(3, 5)]
-    public string dialogueText;             // ¶Ô»°ÄÚÈİ
-    public Sprite speakerPortrait;          // Ëµ»°ÕßÍ·Ïñ
-    public DialogueNodeType nodeType;       // ½ÚµãÀàĞÍ
+    public string dialogueText;             // å¯¹è¯å†…å®¹
+    public Sprite speakerPortrait;          // è¯´è¯è€…å¤´åƒ
+    public DialogueNodeType nodeType;       // èŠ‚ç‚¹ç±»å‹
 
-    [Header("½ø¶È¿ØÖÆ")]
-    public bool isCheckpoint = false;       // ÊÇ·ñÊÇ¼ì²éµã£¨ÏÂ´Î¶Ô»°´ÓÕâÀï¿ªÊ¼£©
-    public int resumeNodeId = -1;           // Èç¹ûÉèÖÃÁË£¬ÏÂ´Î¶Ô»°»á´ÓÕâ¸ö½Úµã¿ªÊ¼£¨-1±íÊ¾Ê¹ÓÃµ±Ç°½Úµã£©
+    [Header("è¿›åº¦æ§åˆ¶")]
+    public bool isCheckpoint = false;       // æ˜¯å¦æ˜¯æ£€æŸ¥ç‚¹ï¼ˆä¸‹æ¬¡å¯¹è¯ä»è¿™é‡Œå¼€å§‹ï¼‰
+    public int resumeNodeId = -1;           // å¦‚æœè®¾ç½®äº†ï¼Œä¸‹æ¬¡å¯¹è¯ä¼šä»è¿™ä¸ªèŠ‚ç‚¹å¼€å§‹ï¼ˆ-1è¡¨ç¤ºä½¿ç”¨å½“å‰èŠ‚ç‚¹ï¼‰
 
-    [Header("Bool ´¥·¢Æ÷")]
-    public List<DialogueBoolSetter> onEnterSetBools = new List<DialogueBoolSetter>();  // ½øÈë½ÚµãÊ±ÉèÖÃµÄBool
-    public List<DialogueBoolSetter> onExitSetBools = new List<DialogueBoolSetter>();   // Àë¿ª½ÚµãÊ±ÉèÖÃµÄBool
+    [Header("Bool è§¦å‘å™¨")]
+    public List<DialogueBoolSetter> onEnterSetBools = new List<DialogueBoolSetter>();  // è¿›å…¥èŠ‚ç‚¹æ—¶è®¾ç½®çš„Bool
+    public List<DialogueBoolSetter> onExitSetBools = new List<DialogueBoolSetter>();   // ç¦»å¼€èŠ‚ç‚¹æ—¶è®¾ç½®çš„Bool
 
-    // ÆÕÍ¨¶Ô»° - ÏÂÒ»¸ö½ÚµãID£¨-1±íÊ¾¶Ô»°½áÊø£©
+    // æ™®é€šå¯¹è¯ - ä¸‹ä¸€ä¸ªèŠ‚ç‚¹IDï¼ˆ-1è¡¨ç¤ºå¯¹è¯ç»“æŸï¼‰
     public int nextNodeId = -1;
 
-    // Ìõ¼ş¶Ô»°
+    // æ¡ä»¶å¯¹è¯
     public DialogueCondition condition;
-    public int conditionMetNodeId;          // Ìõ¼şÂú×ãÊ±Ìø×ªµÄ½Úµã
-    public int conditionNotMetNodeId;       // Ìõ¼ş²»Âú×ãÊ±Ìø×ªµÄ½Úµã
+    public int conditionMetNodeId;          // æ¡ä»¶æ»¡è¶³æ—¶è·³è½¬çš„èŠ‚ç‚¹
+    public int conditionNotMetNodeId;       // æ¡ä»¶ä¸æ»¡è¶³æ—¶è·³è½¬çš„èŠ‚ç‚¹
 
-    // ·ÖÖ§Ñ¡Ôñ
+    // åˆ†æ”¯é€‰æ‹©
     public List<DialogueChoice> choices = new List<DialogueChoice>();
 
-    // ÊÂ¼ş
-    public UnityEvent onNodeEnter;          // ½øÈë´Ë½ÚµãÊ±´¥·¢
-    public UnityEvent onNodeExit;           // Àë¿ª´Ë½ÚµãÊ±´¥·¢
+    // äº‹ä»¶
+    public UnityEvent onNodeEnter;          // è¿›å…¥æ­¤èŠ‚ç‚¹æ—¶è§¦å‘
+    public UnityEvent onNodeExit;           // ç¦»å¼€æ­¤èŠ‚ç‚¹æ—¶è§¦å‘
 }
 
 /// <summary>
-/// ¶Ô»°Êı¾İ
+/// å¯¹è¯æ•°æ®
 /// </summary>
 [CreateAssetMenu(fileName = "NewDialogue", menuName = "Dialogue System/Dialogue Data")]
 public class DialogueData : ScriptableObject
@@ -114,7 +114,7 @@ public class DialogueData : ScriptableObject
 }
 
 /// <summary>
-/// ¶Ô»°ÏµÍ³Ö÷Àà
+/// å¯¹è¯ç³»ç»Ÿä¸»ç±»
 /// </summary>
 public class DialogueSystem : MonoBehaviour
 {
@@ -132,45 +132,45 @@ public class DialogueSystem : MonoBehaviour
     public TextMeshProUGUI conditionHintText;
 
     [Header("Settings")]
-    public float textSpeed = 0.05f;         // ÎÄ×ÖÏÔÊ¾ËÙ¶È
-    public bool useTypewriterEffect = true;  // ÊÇ·ñÊ¹ÓÃ´ò×Ö»úĞ§¹û
+    public float textSpeed = 0.05f;         // æ–‡å­—æ˜¾ç¤ºé€Ÿåº¦
+    public bool useTypewriterEffect = true;  // æ˜¯å¦ä½¿ç”¨æ‰“å­—æœºæ•ˆæœ
 
     [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip typingSound;
     public AudioClip choiceSound;
 
-    // µ±Ç°¶Ô»°×´Ì¬
+    // å½“å‰å¯¹è¯çŠ¶æ€
     private DialogueData currentDialogue;
     private DialogueNode currentNode;
     private bool isDialogueActive = false;
     private bool isTyping = false;
     private Coroutine typingCoroutine;
 
-    // ¶Ô»°½ø¶È¼ÇÒä - ¼ÇÂ¼Ã¿¸ö¶Ô»°Ó¦¸Ã´ÓÄÄ¸ö½Úµã¿ªÊ¼
+    // å¯¹è¯è¿›åº¦è®°å¿† - è®°å½•æ¯ä¸ªå¯¹è¯åº”è¯¥ä»å“ªä¸ªèŠ‚ç‚¹å¼€å§‹
     private Dictionary<string, int> dialogueProgress = new Dictionary<string, int>();
 
-    // ¶Ô»°¼ì²éµã - ¼ÇÂ¼ÌØ¶¨µÄ"´æµµµã"½Úµã
+    // å¯¹è¯æ£€æŸ¥ç‚¹ - è®°å½•ç‰¹å®šçš„"å­˜æ¡£ç‚¹"èŠ‚ç‚¹
     private Dictionary<string, HashSet<int>> dialogueCheckpoints = new Dictionary<string, HashSet<int>>();
 
-    // ¡ï ¶Ô»°Íê³É×´Ì¬ - ¼ÇÂ¼Ã¿¸ö¶Ô»°ÊÇ·ñÒÑÍê³É
+    // â˜… å¯¹è¯å®ŒæˆçŠ¶æ€ - è®°å½•æ¯ä¸ªå¯¹è¯æ˜¯å¦å·²å®Œæˆ
     private static Dictionary<string, bool> dialogueCompleted = new Dictionary<string, bool>();
 
-    // ¡ï È«¾Ö Bool ´æ´¢ - ¿ÉÒÔ±»ÈÎºÎ½Å±¾·ÃÎÊ
+    // â˜… å…¨å±€ Bool å­˜å‚¨ - å¯ä»¥è¢«ä»»ä½•è„šæœ¬è®¿é—®
     private static Dictionary<string, bool> globalBools = new Dictionary<string, bool>();
 
-    // Ìõ¼ş¼ì²éÎ¯ÍĞ
-    public Func<string, int> GetItemCount;      // »ñÈ¡µÀ¾ßÊıÁ¿
-    public Func<string, bool> HasFlag;          // ¼ì²é±ê¼Ç
-    public Func<string, int> GetStatValue;      // »ñÈ¡ÊôĞÔÖµ
+    // æ¡ä»¶æ£€æŸ¥å§”æ‰˜
+    public Func<string, int> GetItemCount;      // è·å–é“å…·æ•°é‡
+    public Func<string, bool> HasFlag;          // æ£€æŸ¥æ ‡è®°
+    public Func<string, int> GetStatValue;      // è·å–å±æ€§å€¼
 
-    // ÊÂ¼ş
+    // äº‹ä»¶
     public event Action OnDialogueStart;
     public event Action OnDialogueEnd;
     public event Action<DialogueNode> OnNodeChanged;
     public event Action<DialogueChoice> OnChoiceMade;
-    public event Action<string> OnDialogueCompleted;  // ¡ï ¶Ô»°Íê³ÉÊÂ¼ş£¬²ÎÊıÊÇ¶Ô»°ID
-    public static event Action<string, bool> OnBoolChanged;  // ¡ï Bool±ä»¯ÊÂ¼ş
+    public event Action<string> OnDialogueCompleted;  // â˜… å¯¹è¯å®Œæˆäº‹ä»¶ï¼Œå‚æ•°æ˜¯å¯¹è¯ID
+    public static event Action<string, bool> OnBoolChanged;  // â˜… Boolå˜åŒ–äº‹ä»¶
 
     private void Awake()
     {
@@ -198,7 +198,7 @@ public class DialogueSystem : MonoBehaviour
     {
         if (!isDialogueActive) return;
 
-        // °´¿Õ¸ñ»ò»Ø³µ¼ÌĞø¶Ô»°
+        // æŒ‰ç©ºæ ¼æˆ–å›è½¦ç»§ç»­å¯¹è¯
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
             if (currentNode != null && currentNode.nodeType != DialogueNodeType.Choice)
@@ -207,21 +207,30 @@ public class DialogueSystem : MonoBehaviour
             }
         }
 
-        // °´Êó±ê×ó¼üÌø¹ı´ò×ÖĞ§¹û
-        if (Input.GetMouseButtonDown(0) && isTyping)
+        // æŒ‰é¼ æ ‡å·¦é”®æˆ–è§¦æ‘¸å±å¹•è·³è¿‡æ‰“å­—æ•ˆæœ
+        if (isTyping)
         {
-            SkipTyping();
+            // é¼ æ ‡ç‚¹å‡»
+            if (Input.GetMouseButtonDown(0))
+            {
+                SkipTyping();
+            }
+            // è§¦æ‘¸å±å¹•ï¼ˆæ‰‹æœºç«¯ï¼‰
+            else if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+            {
+                SkipTyping();
+            }
         }
     }
 
     /// <summary>
-    /// ¿ªÊ¼¶Ô»°£¨×Ô¶¯´Ó¼ÇÒäµÄ½ø¶È¿ªÊ¼£©
+    /// å¼€å§‹å¯¹è¯ï¼ˆè‡ªåŠ¨ä»è®°å¿†çš„è¿›åº¦å¼€å§‹ï¼‰
     /// </summary>
     public void StartDialogue(DialogueData dialogue, int startNodeId = 0)
     {
         if (dialogue == null || dialogue.nodes.Count == 0)
         {
-            Debug.LogWarning("¶Ô»°Êı¾İÎª¿Õ£¡");
+            Debug.LogWarning("å¯¹è¯æ•°æ®ä¸ºç©ºï¼");
             return;
         }
 
@@ -233,50 +242,50 @@ public class DialogueSystem : MonoBehaviour
 
         OnDialogueStart?.Invoke();
 
-        // »ñÈ¡¶Ô»°µÄÎ¨Ò»±êÊ¶£¨ÓÅÏÈÊ¹ÓÃdialogueId£¬·ñÔòÊ¹ÓÃ×ÊÔ´Ãû³Æ£©
+        // è·å–å¯¹è¯çš„å”¯ä¸€æ ‡è¯†ï¼ˆä¼˜å…ˆä½¿ç”¨dialogueIdï¼Œå¦åˆ™ä½¿ç”¨èµ„æºåç§°ï¼‰
         string dialogueKey = GetDialogueKey(dialogue);
 
-        // ¼ì²éÊÇ·ñÓĞ±£´æµÄ½ø¶È£¬Èç¹ûÓĞÔò´Ó±£´æµÄÎ»ÖÃ¿ªÊ¼
+        // æ£€æŸ¥æ˜¯å¦æœ‰ä¿å­˜çš„è¿›åº¦ï¼Œå¦‚æœæœ‰åˆ™ä»ä¿å­˜çš„ä½ç½®å¼€å§‹
         int actualStartNode = startNodeId;
         if (!string.IsNullOrEmpty(dialogueKey) && dialogueProgress.ContainsKey(dialogueKey))
         {
             actualStartNode = dialogueProgress[dialogueKey];
-            Debug.Log($"[¶Ô»°ÏµÍ³] ´Ó±£´æµÄ½ø¶È¿ªÊ¼: {dialogueKey} -> ½Úµã {actualStartNode}");
+            Debug.Log($"[å¯¹è¯ç³»ç»Ÿ] ä»ä¿å­˜çš„è¿›åº¦å¼€å§‹: {dialogueKey} -> èŠ‚ç‚¹ {actualStartNode}");
         }
         else
         {
-            Debug.Log($"[¶Ô»°ÏµÍ³] ´ÓÍ·¿ªÊ¼¶Ô»°: {dialogueKey} -> ½Úµã {actualStartNode}");
+            Debug.Log($"[å¯¹è¯ç³»ç»Ÿ] ä»å¤´å¼€å§‹å¯¹è¯: {dialogueKey} -> èŠ‚ç‚¹ {actualStartNode}");
         }
 
         DisplayNode(actualStartNode);
     }
 
     /// <summary>
-    /// »ñÈ¡¶Ô»°µÄÎ¨Ò»±êÊ¶¼ü
+    /// è·å–å¯¹è¯çš„å”¯ä¸€æ ‡è¯†é”®
     /// </summary>
     private string GetDialogueKey(DialogueData dialogue)
     {
         if (dialogue == null) return null;
 
-        // ÓÅÏÈÊ¹ÓÃÉèÖÃµÄdialogueId£¬·ñÔòÊ¹ÓÃScriptableObjectµÄÃû³Æ
+        // ä¼˜å…ˆä½¿ç”¨è®¾ç½®çš„dialogueIdï¼Œå¦åˆ™ä½¿ç”¨ScriptableObjectçš„åç§°
         if (!string.IsNullOrEmpty(dialogue.dialogueId))
             return dialogue.dialogueId;
 
-        return dialogue.name; // ScriptableObjectµÄ×ÊÔ´Ãû³Æ
+        return dialogue.name; // ScriptableObjectçš„èµ„æºåç§°
     }
 
     /// <summary>
-    /// ¿ªÊ¼¶Ô»°£¨Ç¿ÖÆ´ÓÖ¸¶¨½Úµã¿ªÊ¼£¬ºöÂÔ¼ÇÒä£©
+    /// å¼€å§‹å¯¹è¯ï¼ˆå¼ºåˆ¶ä»æŒ‡å®šèŠ‚ç‚¹å¼€å§‹ï¼Œå¿½ç•¥è®°å¿†ï¼‰
     /// </summary>
     public void StartDialogueFromBeginning(DialogueData dialogue, int startNodeId = 0)
     {
         if (dialogue == null || dialogue.nodes.Count == 0)
         {
-            Debug.LogWarning("¶Ô»°Êı¾İÎª¿Õ£¡");
+            Debug.LogWarning("å¯¹è¯æ•°æ®ä¸ºç©ºï¼");
             return;
         }
 
-        // Çå³ı¸Ã¶Ô»°µÄ½ø¶È¼ÇÂ¼
+        // æ¸…é™¤è¯¥å¯¹è¯çš„è¿›åº¦è®°å½•
         if (dialogueProgress.ContainsKey(dialogue.dialogueId))
         {
             dialogueProgress.Remove(dialogue.dialogueId);
@@ -293,7 +302,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// ±£´æµ±Ç°¶Ô»°½ø¶È£¨ÉèÖÃÏÂ´Î¶Ô»°´ÓÄÄ¸ö½Úµã¿ªÊ¼£©
+    /// ä¿å­˜å½“å‰å¯¹è¯è¿›åº¦ï¼ˆè®¾ç½®ä¸‹æ¬¡å¯¹è¯ä»å“ªä¸ªèŠ‚ç‚¹å¼€å§‹ï¼‰
     /// </summary>
     public void SaveDialogueProgress(int nodeId)
     {
@@ -303,43 +312,43 @@ public class DialogueSystem : MonoBehaviour
             if (!string.IsNullOrEmpty(dialogueKey))
             {
                 dialogueProgress[dialogueKey] = nodeId;
-                Debug.Log($"[¶Ô»°ÏµÍ³] ÊÖ¶¯±£´æ½ø¶È: {dialogueKey} -> ½Úµã {nodeId}");
+                Debug.Log($"[å¯¹è¯ç³»ç»Ÿ] æ‰‹åŠ¨ä¿å­˜è¿›åº¦: {dialogueKey} -> èŠ‚ç‚¹ {nodeId}");
             }
         }
     }
 
     /// <summary>
-    /// ÉèÖÃÖ¸¶¨¶Ô»°µÄÆğÊ¼½Úµã£¨ÓÃÓÚÍâ²¿ÉèÖÃ£©
+    /// è®¾ç½®æŒ‡å®šå¯¹è¯çš„èµ·å§‹èŠ‚ç‚¹ï¼ˆç”¨äºå¤–éƒ¨è®¾ç½®ï¼‰
     /// </summary>
     public void SetDialogueStartNode(string dialogueId, int nodeId)
     {
         dialogueProgress[dialogueId] = nodeId;
-        Debug.Log($"ÉèÖÃ¶Ô»°ÆğÊ¼½Úµã: {dialogueId} -> ½Úµã {nodeId}");
+        Debug.Log($"è®¾ç½®å¯¹è¯èµ·å§‹èŠ‚ç‚¹: {dialogueId} -> èŠ‚ç‚¹ {nodeId}");
     }
 
     /// <summary>
-    /// Çå³ıÖ¸¶¨¶Ô»°µÄ½ø¶È£¨ÖØÖÃÎª´ÓÍ·¿ªÊ¼£©
+    /// æ¸…é™¤æŒ‡å®šå¯¹è¯çš„è¿›åº¦ï¼ˆé‡ç½®ä¸ºä»å¤´å¼€å§‹ï¼‰
     /// </summary>
     public void ClearDialogueProgress(string dialogueId)
     {
         if (dialogueProgress.ContainsKey(dialogueId))
         {
             dialogueProgress.Remove(dialogueId);
-            Debug.Log($"Çå³ı¶Ô»°½ø¶È: {dialogueId}");
+            Debug.Log($"æ¸…é™¤å¯¹è¯è¿›åº¦: {dialogueId}");
         }
     }
 
     /// <summary>
-    /// Çå³ıËùÓĞ¶Ô»°½ø¶È
+    /// æ¸…é™¤æ‰€æœ‰å¯¹è¯è¿›åº¦
     /// </summary>
     public void ClearAllDialogueProgress()
     {
         dialogueProgress.Clear();
-        Debug.Log("Çå³ıËùÓĞ¶Ô»°½ø¶È");
+        Debug.Log("æ¸…é™¤æ‰€æœ‰å¯¹è¯è¿›åº¦");
     }
 
     /// <summary>
-    /// »ñÈ¡Ö¸¶¨¶Ô»°µÄµ±Ç°½ø¶È½Úµã
+    /// è·å–æŒ‡å®šå¯¹è¯çš„å½“å‰è¿›åº¦èŠ‚ç‚¹
     /// </summary>
     public int GetDialogueProgress(string dialogueId)
     {
@@ -347,7 +356,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// ÏÔÊ¾¶Ô»°½Úµã
+    /// æ˜¾ç¤ºå¯¹è¯èŠ‚ç‚¹
     /// </summary>
     private void DisplayNode(int nodeId)
     {
@@ -355,23 +364,23 @@ public class DialogueSystem : MonoBehaviour
 
         if (currentNode == null)
         {
-            Debug.LogWarning($"[¶Ô»°ÏµÍ³] ÕÒ²»µ½½Úµã {nodeId}£¬¶Ô»°½áÊø");
+            Debug.LogWarning($"[å¯¹è¯ç³»ç»Ÿ] æ‰¾ä¸åˆ°èŠ‚ç‚¹ {nodeId}ï¼Œå¯¹è¯ç»“æŸ");
             EndDialogue();
             return;
         }
 
-        // »ñÈ¡¶Ô»°µÄÎ¨Ò»±êÊ¶
+        // è·å–å¯¹è¯çš„å”¯ä¸€æ ‡è¯†
         string dialogueKey = GetDialogueKey(currentDialogue);
 
-        // Èç¹ûÕâ¸ö½ÚµãÊÇ¼ì²éµã£¬×Ô¶¯±£´æ½ø¶È
+        // å¦‚æœè¿™ä¸ªèŠ‚ç‚¹æ˜¯æ£€æŸ¥ç‚¹ï¼Œè‡ªåŠ¨ä¿å­˜è¿›åº¦
         if (currentNode.isCheckpoint && !string.IsNullOrEmpty(dialogueKey))
         {
             int saveNodeId = currentNode.resumeNodeId >= 0 ? currentNode.resumeNodeId : currentNode.nodeId;
             dialogueProgress[dialogueKey] = saveNodeId;
-            Debug.Log($"[¶Ô»°ÏµÍ³] ¡ï ¼ì²éµã±£´æ£¡¶Ô»° '{dialogueKey}' ÏÂ´Î½«´Ó½Úµã {saveNodeId} ¿ªÊ¼");
+            Debug.Log($"[å¯¹è¯ç³»ç»Ÿ] â˜… æ£€æŸ¥ç‚¹ä¿å­˜ï¼å¯¹è¯ '{dialogueKey}' ä¸‹æ¬¡å°†ä»èŠ‚ç‚¹ {saveNodeId} å¼€å§‹");
         }
 
-        // ¡ï ½øÈë½ÚµãÊ±ÉèÖÃ Bool
+        // â˜… è¿›å…¥èŠ‚ç‚¹æ—¶è®¾ç½® Bool
         if (currentNode.onEnterSetBools != null)
         {
             foreach (var boolSetter in currentNode.onEnterSetBools)
@@ -383,11 +392,11 @@ public class DialogueSystem : MonoBehaviour
             }
         }
 
-        // ´¥·¢½øÈë½ÚµãÊÂ¼ş
+        // è§¦å‘è¿›å…¥èŠ‚ç‚¹äº‹ä»¶
         currentNode.onNodeEnter?.Invoke();
         OnNodeChanged?.Invoke(currentNode);
 
-        // ÏÔÊ¾Ëµ»°ÕßĞÅÏ¢
+        // æ˜¾ç¤ºè¯´è¯è€…ä¿¡æ¯
         if (speakerNameText != null)
             speakerNameText.text = currentNode.speakerName;
 
@@ -404,7 +413,7 @@ public class DialogueSystem : MonoBehaviour
             }
         }
 
-        // ÏÔÊ¾¶Ô»°ÎÄ±¾
+        // æ˜¾ç¤ºå¯¹è¯æ–‡æœ¬
         if (useTypewriterEffect)
         {
             if (typingCoroutine != null)
@@ -417,16 +426,16 @@ public class DialogueSystem : MonoBehaviour
                 dialogueText.text = currentNode.dialogueText;
         }
 
-        // ¸ù¾İ½ÚµãÀàĞÍ´¦ÀíUI
+        // æ ¹æ®èŠ‚ç‚¹ç±»å‹å¤„ç†UI
         HandleNodeType();
     }
 
     /// <summary>
-    /// ´¦Àí²»Í¬ÀàĞÍµÄ½Úµã
+    /// å¤„ç†ä¸åŒç±»å‹çš„èŠ‚ç‚¹
     /// </summary>
     private void HandleNodeType()
     {
-        // Çå³ıÖ®Ç°µÄÑ¡Ïî
+        // æ¸…é™¤ä¹‹å‰çš„é€‰é¡¹
         ClearChoices();
 
         switch (currentNode.nodeType)
@@ -450,26 +459,26 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// ÏÔÊ¾Ñ¡Ïî
+    /// æ˜¾ç¤ºé€‰é¡¹
     /// </summary>
     private void DisplayChoices()
     {
         if (choicesContainer == null)
         {
-            Debug.LogError("choicesContainer Îª¿Õ£¡ÇëÔÚ Inspector ÖĞÉèÖÃ");
+            Debug.LogError("choicesContainer ä¸ºç©ºï¼è¯·åœ¨ Inspector ä¸­è®¾ç½®");
             return;
         }
         if (choiceButtonPrefab == null)
         {
-            Debug.LogError("choiceButtonPrefab Îª¿Õ£¡ÇëÔÚ Inspector ÖĞÉèÖÃÑ¡Ïî°´Å¥Ô¤ÖÆÌå");
+            Debug.LogError("choiceButtonPrefab ä¸ºç©ºï¼è¯·åœ¨ Inspector ä¸­è®¾ç½®é€‰é¡¹æŒ‰é’®é¢„åˆ¶ä½“");
             return;
         }
 
-        Debug.Log($"ÏÔÊ¾ {currentNode.choices.Count} ¸öÑ¡Ïî");
+        Debug.Log($"æ˜¾ç¤º {currentNode.choices.Count} ä¸ªé€‰é¡¹");
 
         foreach (var choice in currentNode.choices)
         {
-            // ¼ì²éÑ¡ÏîÌõ¼ş
+            // æ£€æŸ¥é€‰é¡¹æ¡ä»¶
             if (choice.condition != null && !CheckCondition(choice.condition))
             {
                 if (choice.hideIfConditionNotMet)
@@ -482,20 +491,20 @@ public class DialogueSystem : MonoBehaviour
 
             if (button == null)
             {
-                Debug.LogError("Ñ¡Ïî°´Å¥Ô¤ÖÆÌåÉÏÃ»ÓĞ Button ×é¼ş£¡");
+                Debug.LogError("é€‰é¡¹æŒ‰é’®é¢„åˆ¶ä½“ä¸Šæ²¡æœ‰ Button ç»„ä»¶ï¼");
                 continue;
             }
 
             if (buttonText == null)
             {
-                Debug.LogWarning("Ñ¡Ïî°´Å¥Ô¤ÖÆÌåÉÏÃ»ÓĞÕÒµ½ TextMeshProUGUI ×é¼ş");
+                Debug.LogWarning("é€‰é¡¹æŒ‰é’®é¢„åˆ¶ä½“ä¸Šæ²¡æœ‰æ‰¾åˆ° TextMeshProUGUI ç»„ä»¶");
             }
             else
             {
                 buttonText.text = choice.choiceText;
             }
 
-            // ¼ì²éÌõ¼şÊÇ·ñÂú×ã
+            // æ£€æŸ¥æ¡ä»¶æ˜¯å¦æ»¡è¶³
             bool conditionMet = choice.condition == null || CheckCondition(choice.condition);
 
             button.interactable = conditionMet;
@@ -503,16 +512,16 @@ public class DialogueSystem : MonoBehaviour
             DialogueChoice capturedChoice = choice;
             button.onClick.AddListener(() =>
             {
-                Debug.Log($"°´Å¥±»µã»÷: {capturedChoice.choiceText}");
+                Debug.Log($"æŒ‰é’®è¢«ç‚¹å‡»: {capturedChoice.choiceText}");
                 OnChoiceSelected(capturedChoice);
             });
 
-            Debug.Log($"´´½¨Ñ¡Ïî°´Å¥: {choice.choiceText}, ¿É½»»¥: {conditionMet}");
+            Debug.Log($"åˆ›å»ºé€‰é¡¹æŒ‰é’®: {choice.choiceText}, å¯äº¤äº’: {conditionMet}");
 
-            // Èç¹ûÌõ¼ş²»Âú×ã£¬¿ÉÒÔ¸Ä±ä°´Å¥Íâ¹Û
+            // å¦‚æœæ¡ä»¶ä¸æ»¡è¶³ï¼Œå¯ä»¥æ”¹å˜æŒ‰é’®å¤–è§‚
             if (!conditionMet)
             {
-                // ¿ÉÒÔÔÚÕâÀïÌí¼ÓÊÓ¾õ·´À¡£¬Èç»ÒÉ«ÎÄ×Ö
+                // å¯ä»¥åœ¨è¿™é‡Œæ·»åŠ è§†è§‰åé¦ˆï¼Œå¦‚ç°è‰²æ–‡å­—
                 if (buttonText != null)
                     buttonText.color = Color.gray;
             }
@@ -522,7 +531,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Çå³ıÑ¡Ïî
+    /// æ¸…é™¤é€‰é¡¹
     /// </summary>
     private void ClearChoices()
     {
@@ -537,7 +546,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Ñ¡Ïî±»Ñ¡ÖĞ
+    /// é€‰é¡¹è¢«é€‰ä¸­
     /// </summary>
     private void OnChoiceSelected(DialogueChoice choice)
     {
@@ -547,7 +556,7 @@ public class DialogueSystem : MonoBehaviour
         choice.onChoiceSelected?.Invoke();
         OnChoiceMade?.Invoke(choice);
 
-        // ¡ï Àë¿ª½ÚµãÊ±ÉèÖÃ Bool
+        // â˜… ç¦»å¼€èŠ‚ç‚¹æ—¶è®¾ç½® Bool
         ApplyExitBools();
 
         currentNode.onNodeExit?.Invoke();
@@ -555,7 +564,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// µã»÷¼ÌĞø°´Å¥
+    /// ç‚¹å‡»ç»§ç»­æŒ‰é’®
     /// </summary>
     private void OnContinueClicked()
     {
@@ -582,18 +591,18 @@ public class DialogueSystem : MonoBehaviour
                 }
                 else
                 {
-                    // ÏÔÊ¾Ìõ¼ş²»Âú×ãÌáÊ¾
+                    // æ˜¾ç¤ºæ¡ä»¶ä¸æ»¡è¶³æç¤º
                     ShowConditionHint(currentNode.condition.failMessage);
                     nextId = currentNode.conditionNotMetNodeId;
                 }
                 break;
 
             case DialogueNodeType.Choice:
-                // Ñ¡ÔñĞÍ¶Ô»°ĞèÒªÑ¡ÔñÑ¡Ïî²ÅÄÜ¼ÌĞø
+                // é€‰æ‹©å‹å¯¹è¯éœ€è¦é€‰æ‹©é€‰é¡¹æ‰èƒ½ç»§ç»­
                 return;
         }
 
-        // ¡ï Àë¿ª½ÚµãÊ±ÉèÖÃ Bool
+        // â˜… ç¦»å¼€èŠ‚ç‚¹æ—¶è®¾ç½® Bool
         ApplyExitBools();
 
         currentNode.onNodeExit?.Invoke();
@@ -609,7 +618,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Ó¦ÓÃÀë¿ª½ÚµãÊ±µÄ Bool ÉèÖÃ
+    /// åº”ç”¨ç¦»å¼€èŠ‚ç‚¹æ—¶çš„ Bool è®¾ç½®
     /// </summary>
     private void ApplyExitBools()
     {
@@ -626,11 +635,11 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼ì²éÌõ¼şÊÇ·ñÂú×ã
+    /// æ£€æŸ¥æ¡ä»¶æ˜¯å¦æ»¡è¶³
     /// </summary>
     private bool CheckCondition(DialogueCondition condition)
     {
-        // Èç¹ûÌõ¼şÎª¿Õ£¬»òÕßÌõ¼şKeyÎª¿Õ£¬ÊÓÎªÌõ¼şÂú×ã
+        // å¦‚æœæ¡ä»¶ä¸ºç©ºï¼Œæˆ–è€…æ¡ä»¶Keyä¸ºç©ºï¼Œè§†ä¸ºæ¡ä»¶æ»¡è¶³
         if (condition == null) return true;
         if (string.IsNullOrEmpty(condition.conditionKey)) return true;
 
@@ -640,21 +649,21 @@ public class DialogueSystem : MonoBehaviour
                 if (GetItemCount != null)
                     return GetItemCount(condition.conditionKey) >= condition.requiredValue;
                 else
-                    Debug.LogWarning("[¶Ô»°ÏµÍ³] GetItemCount Î¯ÍĞÎ´ÉèÖÃ£¡ÇëÈ·±£ DialogueSystemExample ÒÑ³õÊ¼»¯");
+                    Debug.LogWarning("[å¯¹è¯ç³»ç»Ÿ] GetItemCount å§”æ‰˜æœªè®¾ç½®ï¼è¯·ç¡®ä¿ DialogueSystemExample å·²åˆå§‹åŒ–");
                 break;
 
             case ConditionType.HasFlag:
                 if (HasFlag != null)
                     return HasFlag(condition.conditionKey);
                 else
-                    Debug.LogWarning("[¶Ô»°ÏµÍ³] HasFlag Î¯ÍĞÎ´ÉèÖÃ£¡");
+                    Debug.LogWarning("[å¯¹è¯ç³»ç»Ÿ] HasFlag å§”æ‰˜æœªè®¾ç½®ï¼");
                 break;
 
             case ConditionType.StatCheck:
                 if (GetStatValue != null)
                     return GetStatValue(condition.conditionKey) >= condition.requiredValue;
                 else
-                    Debug.LogWarning("[¶Ô»°ÏµÍ³] GetStatValue Î¯ÍĞÎ´ÉèÖÃ£¡");
+                    Debug.LogWarning("[å¯¹è¯ç³»ç»Ÿ] GetStatValue å§”æ‰˜æœªè®¾ç½®ï¼");
                 break;
         }
 
@@ -662,7 +671,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// ÏÔÊ¾Ìõ¼şÌáÊ¾
+    /// æ˜¾ç¤ºæ¡ä»¶æç¤º
     /// </summary>
     private void ShowConditionHint(string message)
     {
@@ -682,7 +691,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// ´ò×Ö»úĞ§¹û
+    /// æ‰“å­—æœºæ•ˆæœ
     /// </summary>
     private IEnumerator TypeText(string text)
     {
@@ -703,44 +712,44 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Ìø¹ı´ò×ÖĞ§¹û£¬Á¢¼´ÏÔÊ¾ÍêÕûÎÄ±¾
+    /// è·³è¿‡æ‰“å­—æ•ˆæœï¼Œç«‹å³æ˜¾ç¤ºå®Œæ•´æ–‡æœ¬
     /// </summary>
     private void SkipTyping()
     {
-        if (!isTyping) return;  // Èç¹ûÃ»ÓĞÔÚ´ò×Ö£¬Ö±½Ó·µ»Ø
+        if (!isTyping) return;  // å¦‚æœæ²¡æœ‰åœ¨æ‰“å­—ï¼Œç›´æ¥è¿”å›
 
-        // ÏÈÉèÖÃ±êÖ¾£¬·ÀÖ¹ÖØ¸´µ÷ÓÃ
+        // å…ˆè®¾ç½®æ ‡å¿—ï¼Œé˜²æ­¢é‡å¤è°ƒç”¨
         isTyping = false;
 
-        // Í£Ö¹´ò×ÖĞ­³Ì
+        // åœæ­¢æ‰“å­—åç¨‹
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
             typingCoroutine = null;
         }
 
-        // Á¢¼´ÏÔÊ¾ÍêÕûÎÄ±¾
+        // ç«‹å³æ˜¾ç¤ºå®Œæ•´æ–‡æœ¬
         if (dialogueText != null && currentNode != null)
         {
             dialogueText.text = currentNode.dialogueText;
         }
 
-        Debug.Log("[¶Ô»°ÏµÍ³] Ìø¹ı´ò×ÖĞ§¹û£¬ÏÔÊ¾ÍêÕûÎÄ±¾");
+        Debug.Log("[å¯¹è¯ç³»ç»Ÿ] è·³è¿‡æ‰“å­—æ•ˆæœï¼Œæ˜¾ç¤ºå®Œæ•´æ–‡æœ¬");
     }
 
     /// <summary>
-    /// ½áÊø¶Ô»°
+    /// ç»“æŸå¯¹è¯
     /// </summary>
     public void EndDialogue()
     {
-        // ¡ï ¼ÇÂ¼¶Ô»°ÒÑÍê³É
+        // â˜… è®°å½•å¯¹è¯å·²å®Œæˆ
         if (currentDialogue != null)
         {
             string dialogueKey = GetDialogueKey(currentDialogue);
             if (!string.IsNullOrEmpty(dialogueKey))
             {
                 dialogueCompleted[dialogueKey] = true;
-                Debug.Log($"[¶Ô»°ÏµÍ³] ¶Ô»°Íê³É: {dialogueKey}");
+                Debug.Log($"[å¯¹è¯ç³»ç»Ÿ] å¯¹è¯å®Œæˆ: {dialogueKey}");
                 OnDialogueCompleted?.Invoke(dialogueKey);
             }
         }
@@ -758,7 +767,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼ì²éÊÇ·ñÕıÔÚ¶Ô»°ÖĞ
+    /// æ£€æŸ¥æ˜¯å¦æ­£åœ¨å¯¹è¯ä¸­
     /// </summary>
     public bool IsDialogueActive()
     {
@@ -766,7 +775,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Ìø×ªµ½Ö¸¶¨½Úµã
+    /// è·³è½¬åˆ°æŒ‡å®šèŠ‚ç‚¹
     /// </summary>
     public void JumpToNode(int nodeId)
     {
@@ -774,20 +783,20 @@ public class DialogueSystem : MonoBehaviour
         DisplayNode(nodeId);
     }
 
-    // ================= ¶Ô»°Íê³É×´Ì¬Ïà¹Ø·½·¨ =================
+    // ================= å¯¹è¯å®ŒæˆçŠ¶æ€ç›¸å…³æ–¹æ³• =================
 
     /// <summary>
-    /// ¼ì²éÖ¸¶¨¶Ô»°ÊÇ·ñÒÑÍê³É
+    /// æ£€æŸ¥æŒ‡å®šå¯¹è¯æ˜¯å¦å·²å®Œæˆ
     /// </summary>
-    /// <param name="dialogueId">¶Ô»°ID£¨DialogueData µÄ dialogueId »ò×ÊÔ´Ãû£©</param>
-    /// <returns>ÊÇ·ñÒÑÍê³É</returns>
+    /// <param name="dialogueId">å¯¹è¯IDï¼ˆDialogueData çš„ dialogueId æˆ–èµ„æºåï¼‰</param>
+    /// <returns>æ˜¯å¦å·²å®Œæˆ</returns>
     public static bool IsDialogueCompleted(string dialogueId)
     {
         return dialogueCompleted.ContainsKey(dialogueId) && dialogueCompleted[dialogueId];
     }
 
     /// <summary>
-    /// ¼ì²éÖ¸¶¨¶Ô»°Êı¾İÊÇ·ñÒÑÍê³É
+    /// æ£€æŸ¥æŒ‡å®šå¯¹è¯æ•°æ®æ˜¯å¦å·²å®Œæˆ
     /// </summary>
     public bool IsDialogueCompleted(DialogueData dialogue)
     {
@@ -797,37 +806,37 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// ÊÖ¶¯ÉèÖÃ¶Ô»°Íê³É×´Ì¬
+    /// æ‰‹åŠ¨è®¾ç½®å¯¹è¯å®ŒæˆçŠ¶æ€
     /// </summary>
     public static void SetDialogueCompleted(string dialogueId, bool completed = true)
     {
         dialogueCompleted[dialogueId] = completed;
-        Debug.Log($"[¶Ô»°ÏµÍ³] ÉèÖÃ¶Ô»°×´Ì¬: {dialogueId} = {completed}");
+        Debug.Log($"[å¯¹è¯ç³»ç»Ÿ] è®¾ç½®å¯¹è¯çŠ¶æ€: {dialogueId} = {completed}");
     }
 
     /// <summary>
-    /// ÖØÖÃÖ¸¶¨¶Ô»°µÄÍê³É×´Ì¬
+    /// é‡ç½®æŒ‡å®šå¯¹è¯çš„å®ŒæˆçŠ¶æ€
     /// </summary>
     public static void ResetDialogueCompleted(string dialogueId)
     {
         if (dialogueCompleted.ContainsKey(dialogueId))
         {
             dialogueCompleted.Remove(dialogueId);
-            Debug.Log($"[¶Ô»°ÏµÍ³] ÖØÖÃ¶Ô»°×´Ì¬: {dialogueId}");
+            Debug.Log($"[å¯¹è¯ç³»ç»Ÿ] é‡ç½®å¯¹è¯çŠ¶æ€: {dialogueId}");
         }
     }
 
     /// <summary>
-    /// ÖØÖÃËùÓĞ¶Ô»°µÄÍê³É×´Ì¬
+    /// é‡ç½®æ‰€æœ‰å¯¹è¯çš„å®ŒæˆçŠ¶æ€
     /// </summary>
     public static void ResetAllDialogueCompleted()
     {
         dialogueCompleted.Clear();
-        Debug.Log("[¶Ô»°ÏµÍ³] ÖØÖÃËùÓĞ¶Ô»°×´Ì¬");
+        Debug.Log("[å¯¹è¯ç³»ç»Ÿ] é‡ç½®æ‰€æœ‰å¯¹è¯çŠ¶æ€");
     }
 
     /// <summary>
-    /// »ñÈ¡ËùÓĞÒÑÍê³ÉµÄ¶Ô»°IDÁĞ±í
+    /// è·å–æ‰€æœ‰å·²å®Œæˆçš„å¯¹è¯IDåˆ—è¡¨
     /// </summary>
     public static List<string> GetCompletedDialogues()
     {
@@ -840,20 +849,20 @@ public class DialogueSystem : MonoBehaviour
         return completed;
     }
 
-    // ================= È«¾Ö Bool Ïà¹Ø·½·¨ =================
+    // ================= å…¨å±€ Bool ç›¸å…³æ–¹æ³• =================
 
     /// <summary>
-    /// ÉèÖÃÒ»¸ö Bool Öµ£¨¾²Ì¬·½·¨£¬ÈÎºÎµØ·½¶¼ÄÜµ÷ÓÃ£©
+    /// è®¾ç½®ä¸€ä¸ª Bool å€¼ï¼ˆé™æ€æ–¹æ³•ï¼Œä»»ä½•åœ°æ–¹éƒ½èƒ½è°ƒç”¨ï¼‰
     /// </summary>
     public static void SetBool(string boolName, bool value)
     {
         globalBools[boolName] = value;
-        Debug.Log($"[¶Ô»°ÏµÍ³] ÉèÖÃ Bool: {boolName} = {value}");
+        Debug.Log($"[å¯¹è¯ç³»ç»Ÿ] è®¾ç½® Bool: {boolName} = {value}");
         OnBoolChanged?.Invoke(boolName, value);
     }
 
     /// <summary>
-    /// »ñÈ¡Ò»¸ö Bool Öµ£¨¾²Ì¬·½·¨£¬ÈÎºÎµØ·½¶¼ÄÜµ÷ÓÃ£©
+    /// è·å–ä¸€ä¸ª Bool å€¼ï¼ˆé™æ€æ–¹æ³•ï¼Œä»»ä½•åœ°æ–¹éƒ½èƒ½è°ƒç”¨ï¼‰
     /// </summary>
     public static bool GetBool(string boolName, bool defaultValue = false)
     {
@@ -863,7 +872,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼ì²éÄ³¸ö Bool ÊÇ·ñ´æÔÚ
+    /// æ£€æŸ¥æŸä¸ª Bool æ˜¯å¦å­˜åœ¨
     /// </summary>
     public static bool HasBool(string boolName)
     {
@@ -871,28 +880,28 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// É¾³ıÒ»¸ö Bool
+    /// åˆ é™¤ä¸€ä¸ª Bool
     /// </summary>
     public static void RemoveBool(string boolName)
     {
         if (globalBools.ContainsKey(boolName))
         {
             globalBools.Remove(boolName);
-            Debug.Log($"[¶Ô»°ÏµÍ³] É¾³ı Bool: {boolName}");
+            Debug.Log($"[å¯¹è¯ç³»ç»Ÿ] åˆ é™¤ Bool: {boolName}");
         }
     }
 
     /// <summary>
-    /// Çå³ıËùÓĞ Bool
+    /// æ¸…é™¤æ‰€æœ‰ Bool
     /// </summary>
     public static void ClearAllBools()
     {
         globalBools.Clear();
-        Debug.Log("[¶Ô»°ÏµÍ³] Çå³ıËùÓĞ Bool");
+        Debug.Log("[å¯¹è¯ç³»ç»Ÿ] æ¸…é™¤æ‰€æœ‰ Bool");
     }
 
     /// <summary>
-    /// »ñÈ¡ËùÓĞ Bool£¨ÓÃÓÚ´æµµµÈ£©
+    /// è·å–æ‰€æœ‰ Boolï¼ˆç”¨äºå­˜æ¡£ç­‰ï¼‰
     /// </summary>
     public static Dictionary<string, bool> GetAllBools()
     {

@@ -12,9 +12,10 @@ public class NPCDialogue : MonoBehaviour
     [SerializeField] private int startNodeId = 0;
 
     [Header("交互设置")]
-    [SerializeField] private KeyCode interactKey = KeyCode.E;
+    // [SerializeField] private KeyCode interactKey = KeyCode.E;
     [SerializeField] private GameObject interactHint; // "按E对话" 提示UI
     private bool playerInRange = false;
+    private bool isListen;
 
     [Header("Timeline 设置")]
     [Tooltip("拖入场景中的 PlayableDirector（Timeline播放器）")]
@@ -28,39 +29,21 @@ public class NPCDialogue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(interactKey))
+        if (playerInRange && isListen)
         {
             if (DialogueSystem.Instance != null && !DialogueSystem.Instance.IsDialogueActive() && !DialogueSystem.Instance.IsDialogueCompleted(dialogue))
             {
                 DialogueSystem.Instance.StartDialogue(dialogue, startNodeId);
             }
+            // interactHint.SetActive(false);
+        }
+        if ((playableDirector != null && playableDirector.state == PlayState.Playing) || DialogueSystem.Instance.IsDialogueActive())
+        {
             interactHint.SetActive(false);
-        }
-        if (playableDirector != null && playableDirector.state == PlayState.Playing)
-        {
 
         }
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = true;
-            if (interactHint != null && !DialogueSystem.Instance.IsDialogueCompleted(dialogue))
-                interactHint.SetActive(true);
-        }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = false;
-            if (interactHint != null && DialogueSystem.Instance.IsDialogueCompleted(dialogue))
-                interactHint.SetActive(false);
-        }
     }
-
     // 2D版本
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -73,7 +56,6 @@ public class NPCDialogue : MonoBehaviour
             }
         }
     }
-
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -82,6 +64,12 @@ public class NPCDialogue : MonoBehaviour
             if (interactHint != null)
                 interactHint.SetActive(false);
         }
+    }
+    public void eavesdrop()
+    {
+        isListen = true;
+
+        // isListen = false;
     }
 }
 

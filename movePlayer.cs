@@ -3,32 +3,39 @@ using System.Collections.Generic;
 using System.Diagnostics;
 // using System.Threading.Tasks.Dataflow;
 using UnityEngine;
-using UnityEngine.Playables;  // ¡ï Ìí¼Ó Timeline Ö§³Ö
+using UnityEngine.Playables;  // æ·»åŠ Timelineæ”¯æŒ
 
 public class movePlayer : MonoBehaviour
 {
-    [Header("ÒÆ¶¯ÉèÖÃ")]
+    [Header("ç§»åŠ¨è®¾ç½®")]
     [SerializeField] private float moveSpeed = 5f;
 
-    [Header("ÌøÔ¾ÉèÖÃ")]
+    [Header("è·³è·ƒè®¾ç½®")]
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.2f;
     private bool isGrounded = false;
 
-    [Header("·­×ªÉèÖÃ")]
-    [SerializeField] private bool flipByScale = true;  // true: ÓÃScale·­×ª, false: ÓÃSpriteRenderer·­×ª
+    [Header("ç¿»è½¬è®¾ç½®")]
+    [SerializeField] private bool flipByScale = true;  // true: ç”¨Scaleç¿»è½¬, false: ç”¨SpriteRendererç¿»è½¬
 
-    [Header("Timeline ÉèÖÃ")]
-    [Tooltip("ÍÏÈë³¡¾°ÖĞµÄ PlayableDirector£¨Timeline²¥·ÅÆ÷£©")]
-    [SerializeField] private PlayableDirector playableDirector;  // ¡ï Timeline ²¥·ÅÆ÷ÒıÓÃ
+    [Header("Timeline è®¾ç½®")]
+    [Tooltip("æ‹–å…¥åœºæ™¯ä¸­çš„ PlayableDirectorï¼ˆTimelineæ’­æ”¾å™¨ï¼‰")]
+    [SerializeField] private PlayableDirector playableDirector;  // â˜… Timeline æ’­æ”¾å™¨å¼•ç”¨
+
+    [Header("æ‰‹æœºç«¯æ§åˆ¶")]
+    [Tooltip("æ‹–å…¥åœºæ™¯ä¸­çš„ Joystickï¼ˆæ‘‡æ†æ§åˆ¶å™¨ï¼‰")]
+    [SerializeField] private Joystick joystick;  // æ‘‡æ†å¼•ç”¨
+    [Tooltip("æ˜¯å¦å¯ç”¨æ‰‹æœºç«¯æ§åˆ¶")]
+    [SerializeField] private bool useMobileControls = false;
 
     private Animator anim;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private bool facingRight = true;
     private float horizontalInput = 0f;
+    private bool jumpButtonPressed = false;  // è·³è·ƒæŒ‰é’®çŠ¶æ€
 
     void Start()
     {
@@ -40,62 +47,71 @@ public class movePlayer : MonoBehaviour
 
     void Update()
     {
-        // Ê¼ÖÕ¼ì²âµØÃæ£¨¼´Ê¹ÔÚ¶Ô»°ÖĞÒ²ĞèÒª£©
+        // å§‹ç»ˆæ£€æµ‹åœ°é¢ï¼ˆå³ä½¿åœ¨å¯¹è¯ä¸­ä¹Ÿéœ€è¦ï¼‰
         CheckGround();
 
-        // ¡ï ¶Ô»°½øĞĞÊ±»ò Timeline ²¥·ÅÊ±½ûÖ¹ÒÆ¶¯
+        // â˜… å¯¹è¯è¿›è¡Œæ—¶æˆ– Timeline æ’­æ”¾æ—¶ç¦æ­¢ç§»åŠ¨
         if (IsMovementDisabled())
         {
             horizontalInput = 0f;
-            // Ç¿ÖÆÉèÖÃÎª¾²Ö¹¶¯»­×´Ì¬
+            // å¼ºåˆ¶è®¾ç½®ä¸ºé™æ­¢åŠ¨ç”»çŠ¶æ€
             anim.SetBool("IsMove", false);
-            anim.SetBool("IsJump", false);  // ¡ï Ç¿ÖÆ¹Ø±ÕÌøÔ¾¶¯»­
-            return;  // Ö±½Ó·µ»Ø£¬²»´¦ÀíÈÎºÎÊäÈë
+            anim.SetBool("IsJump", false);  // â˜… å¼ºåˆ¶å…³é—­è·³è·ƒåŠ¨ç”»
+            return;  // ç›´æ¥è¿”å›ï¼Œä¸å¤„ç†ä»»ä½•è¾“å…¥
         }
 
         horizontalInput = 0f;
 
         AnimatorController();
 
-        // AD¼ü¿ØÖÆ
-        if (Input.GetKey(KeyCode.A))
+        // è·å–ç§»åŠ¨è¾“å…¥ï¼ˆé”®ç›˜ + æ‘‡æ†ï¼‰
+        if (useMobileControls && joystick != null)
         {
-            horizontalInput = -1f;
+            // ä½¿ç”¨æ‘‡æ†è¾“å…¥
+            horizontalInput = joystick.Horizontal;
         }
-        else if (Input.GetKey(KeyCode.D))
+        else
         {
-            horizontalInput = 1f;
-            
+            // ADé”®æ§åˆ¶
+            if (Input.GetKey(KeyCode.A))
+            {
+                horizontalInput = -1f;
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                horizontalInput = 1f;
+            }
         }
 
-        // ÌøÔ¾
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        // è·³è·ƒï¼ˆé”®ç›˜ç©ºæ ¼é”® æˆ– è·³è·ƒæŒ‰é’®ï¼‰
+        if ((Input.GetKeyDown(KeyCode.Space) || jumpButtonPressed) && isGrounded)
         {
             Jump();
+            jumpButtonPressed = false;  // é‡ç½®è·³è·ƒæŒ‰é’®çŠ¶æ€
         }
 
-        // ÒÆ¶¯
+        // ç§»åŠ¨
         if (horizontalInput != 0)
         {
             transform.Translate(Vector3.right * horizontalInput * moveSpeed * Time.deltaTime);
-            
 
-            // ·­×ª·½Ïò
+
+            // ç¿»è½¬æ–¹å‘
             if (horizontalInput > 0 && !facingRight)
             {
                 Flip();
-                
+
             }
             else if (horizontalInput < 0 && facingRight)
             {
                 Flip();
-                
+
             }
         }
     }
 
     /// <summary>
-    /// ·­×ª½ÇÉ«³¯Ïò
+    /// ç¿»è½¬è§’è‰²æœå‘
     /// </summary>
     void Flip()
     {
@@ -103,14 +119,14 @@ public class movePlayer : MonoBehaviour
 
         if (flipByScale)
         {
-            // ·½Ê½1: Í¨¹ıScale·­×ª£¨ÍÆ¼ö£¬×ÓÎïÌåÒ²»áÒ»Æğ·­×ª£©
+            // æ–¹å¼1: é€šè¿‡Scaleç¿»è½¬ï¼ˆæ¨èï¼Œå­ç‰©ä½“ä¹Ÿä¼šä¸€èµ·ç¿»è½¬ï¼‰
             Vector3 scale = transform.localScale;
             scale.x *= -1;
             transform.localScale = scale;
         }
         else
         {
-            // ·½Ê½2: Í¨¹ıSpriteRenderer·­×ª
+            // æ–¹å¼2: é€šè¿‡SpriteRendererç¿»è½¬
             if (spriteRenderer != null)
             {
                 spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -119,13 +135,25 @@ public class movePlayer : MonoBehaviour
     }
     private void AnimatorController()
     {
-        bool IsMove = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D);
+        bool IsMove = false;
+
+        if (useMobileControls && joystick != null)
+        {
+            // æ‘‡æ†æ§åˆ¶æ—¶ï¼Œæ ¹æ®æ‘‡æ†è¾“å…¥åˆ¤æ–­æ˜¯å¦ç§»åŠ¨
+            IsMove = Mathf.Abs(joystick.Horizontal) > 0.1f;
+        }
+        else
+        {
+            // é”®ç›˜æ§åˆ¶
+            IsMove = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D);
+        }
+
         anim.SetBool("IsMove", IsMove);
         anim.SetBool("IsJump", !isGrounded);
     }
 
     /// <summary>
-    /// ¼ì²âÊÇ·ñÔÚµØÃæÉÏ
+    /// æ£€æµ‹æ˜¯å¦åœ¨åœ°é¢ä¸Š
     /// </summary>
     void CheckGround()
     {
@@ -135,13 +163,13 @@ public class movePlayer : MonoBehaviour
         }
         else
         {
-            // Èç¹ûÃ»ÓĞÉèÖÃgroundCheck£¬Ê¹ÓÃ½ÇÉ«Î»ÖÃÏòÏÂ¼ì²â
+            // å¦‚æœæ²¡æœ‰è®¾ç½®groundCheckï¼Œä½¿ç”¨è§’è‰²ä½ç½®å‘ä¸‹æ£€æµ‹
             isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, groundLayer);
         }
     }
 
     /// <summary>
-    /// ÌøÔ¾
+    /// è·³è·ƒ
     /// </summary>
     void Jump()
     {
@@ -149,7 +177,7 @@ public class movePlayer : MonoBehaviour
     }
 
     /// <summary>
-    /// ÔÚSceneÊÓÍ¼ÖĞ»æÖÆµØÃæ¼ì²â·¶Î§£¨·½±ãµ÷ÊÔ£©
+    /// åœ¨Sceneè§†å›¾ä¸­ç»˜åˆ¶åœ°é¢æ£€æµ‹èŒƒå›´ï¼ˆæ–¹ä¾¿è°ƒè¯•ï¼‰
     /// </summary>
     void OnDrawGizmosSelected()
     {
@@ -161,17 +189,17 @@ public class movePlayer : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼ì²éÊÇ·ñÓ¦¸Ã½ûÓÃÒÆ¶¯
+    /// æ£€æŸ¥æ˜¯å¦åº”è¯¥ç¦ç”¨ç§»åŠ¨
     /// </summary>
     private bool IsMovementDisabled()
     {
-        // ¶Ô»°½øĞĞÊ±½ûÖ¹ÒÆ¶¯
+        // å¯¹è¯è¿›è¡Œæ—¶ç¦æ­¢ç§»åŠ¨
         if (DialogueSystem.Instance != null && DialogueSystem.Instance.IsDialogueActive())
         {
             return true;
         }
 
-        // Timeline ²¥·ÅÊ±½ûÖ¹ÒÆ¶¯
+        // Timeline æ’­æ”¾æ—¶ç¦æ­¢ç§»åŠ¨
         if (playableDirector != null && playableDirector.state == PlayState.Playing)
         {
             return true;
@@ -182,10 +210,45 @@ public class movePlayer : MonoBehaviour
     }
 
     /// <summary>
-    /// ÉèÖÃ Timeline ²¥·ÅÆ÷ÒıÓÃ£¨¿ÉÒÔÍ¨¹ı´úÂëÉèÖÃ£©
+    /// è®¾ç½® Timeline æ’­æ”¾å™¨å¼•ç”¨ï¼ˆå¯ä»¥é€šè¿‡ä»£ç è®¾ç½®ï¼‰
     /// </summary>
     public void SetPlayableDirector(PlayableDirector director)
     {
         playableDirector = director;
+    }
+
+    /// <summary>
+    /// è·³è·ƒæŒ‰é’®æŒ‰ä¸‹ï¼ˆä¾›UIæŒ‰é’®è°ƒç”¨ï¼‰
+    /// </summary>
+    public void OnJumpButtonDown()
+    {
+        if (isGrounded && !IsMovementDisabled())
+        {
+            jumpButtonPressed = true;
+        }
+    }
+
+    /// <summary>
+    /// è®¾ç½®æ‘‡æ†å¼•ç”¨ï¼ˆå¯ä»¥é€šè¿‡ä»£ç è®¾ç½®ï¼‰
+    /// </summary>
+    public void SetJoystick(Joystick newJoystick)
+    {
+        joystick = newJoystick;
+    }
+
+    /// <summary>
+    /// è®¾ç½®æ˜¯å¦ä½¿ç”¨æ‰‹æœºç«¯æ§åˆ¶
+    /// </summary>
+    public void SetUseMobileControls(bool useMobile)
+    {
+        useMobileControls = useMobile;
+    }
+
+    /// <summary>
+    /// è·å–å½“å‰æ˜¯å¦åœ¨åœ°é¢ä¸Šï¼ˆä¾›å¤–éƒ¨æŸ¥è¯¢ï¼‰
+    /// </summary>
+    public bool IsGrounded()
+    {
+        return isGrounded;
     }
 }

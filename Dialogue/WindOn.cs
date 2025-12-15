@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 public class WindOn : MonoBehaviour
 {
     // Start is called before the first frame update
-    [Header("¶Ô»°ÉèÖÃ")]
+    [Header("å¯¹è¯è®¾ç½®")]
     [SerializeField] private DialogueData dialogue;
     [SerializeField] private int startNodeId = 0;
     public PlayableDirector playableDirector;
