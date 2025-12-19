@@ -1,0 +1,105 @@
+# 设置界面 (Settings Panel) 配置指南
+
+## 功能说明
+- 点击设置按钮后游戏暂停，弹出设置界面
+- 设置界面包含三个按钮，分别可以重新开始三个关卡
+- 按 ESC 键也可以打开/关闭设置界面
+- 关闭设置界面后游戏恢复
+
+## Unity 编辑器配置步骤
+
+### 1. 创建 UI 结构
+
+在 Canvas 下创建以下 UI 层级结构：
+
+```
+Canvas
+├── SettingsButton (Button)  ← 设置按钮（齿轮图标）
+└── SettingsPanel (Panel)    ← 设置界面面板
+    ├── PanelBackground (Image)  ← 背景
+    ├── Title (Text/TextMeshPro) ← "设置" 标题
+    ├── CloseButton (Button)     ← 关闭按钮（X）
+    ├── Level1Button (Button)    ← "重新开始关卡1"
+    ├── Level2Button (Button)    ← "重新开始关卡2"
+    └── Level3Button (Button)    ← "重新开始关卡3"
+```
+
+### 2. 创建设置按钮 (SettingsButton)
+
+1. 在 Canvas 下右键 → UI → Button
+2. 命名为 "SettingsButton"
+3. 调整位置到屏幕右上角
+4. 可以使用齿轮图标作为按钮图片
+
+### 3. 创建设置面板 (SettingsPanel)
+
+1. 在 Canvas 下右键 → UI → Panel
+2. 命名为 "SettingsPanel"
+3. 调整大小（建议 400x500 像素左右）
+4. 居中显示
+5. 添加背景图片或颜色
+
+### 4. 在面板内添加按钮
+
+在 SettingsPanel 下创建：
+- **CloseButton**: 关闭按钮，放在右上角
+- **Level1Button**: 文本设置为 "重新开始 副本0" 或 "关卡1"
+- **Level2Button**: 文本设置为 "重新开始 副本1" 或 "关卡2"
+- **Level3Button**: 文本设置为 "重新开始 副本2" 或 "关卡3"
+
+### 5. 添加 SettingsPanel 脚本
+
+1. 在场景中创建一个空物体，命名为 "SettingsManager"
+2. 将 `SettingsPanel.cs` 脚本拖到这个物体上
+3. 在 Inspector 中配置以下引用：
+   - **Settings Button**: 拖入 SettingsButton
+   - **Settings Panel**: 拖入 SettingsPanel 面板
+   - **Close Button**: 拖入 CloseButton
+   - **Level 1 Button**: 拖入 Level1Button
+   - **Level 2 Button**: 拖入 Level2Button
+   - **Level 3 Button**: 拖入 Level3Button
+
+### 6. 场景名称配置
+
+在 SettingsPanel 脚本的 Inspector 中：
+- **Level 1 Scene Name**: "副本0" （默认）
+- **Level 2 Scene Name**: "副本1" （默认）
+- **Level 3 Scene Name**: "副本2" （默认）
+
+### 7. 确保场景已添加到 Build Settings
+
+1. 打开 File → Build Settings
+2. 确保以下场景都在列表中：
+   - 开始界面
+   - 副本0
+   - 副本1
+   - 副本2
+   - 校史馆
+
+## 脚本功能说明
+
+### 公开方法
+- `OpenSettings()`: 打开设置界面并暂停游戏
+- `CloseSettings()`: 关闭设置界面并恢复游戏
+- `RestartLevel1()`: 重新开始关卡1
+- `RestartLevel2()`: 重新开始关卡2
+- `RestartLevel3()`: 重新开始关卡3
+- `ReturnToMainMenu()`: 返回主菜单（可选）
+- `IsSettingsOpen()`: 检查设置界面是否打开
+
+### 注意事项
+1. 暂停使用 `Time.timeScale = 0`，这会暂停所有基于时间的操作
+2. UI 按钮不受 Time.timeScale 影响，可以正常点击
+3. 加载新场景前会自动恢复 Time.timeScale = 1
+4. ESC 键可以快速打开/关闭设置界面
+
+## 可选扩展
+
+### 添加返回主菜单按钮
+在 SettingsPanel 中添加一个新按钮，在 Inspector 中绑定 `ReturnToMainMenu()` 方法。
+
+### 添加音量控制
+可以在脚本中添加音量滑动条，使用 `AudioListener.volume` 控制全局音量。
+
+### 添加画面设置
+可以添加分辨率、全屏等选项。

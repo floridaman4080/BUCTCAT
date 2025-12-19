@@ -30,7 +30,7 @@ public class Talkable : MonoBehaviour
     }
     void Update()
     {
-        if (对话系统.instance.isStart == true && Input.GetKeyDown(KeyCode.E) && !isStartDialogue)
+        if (对话系统.instance.isStart == true && Interact_E.instance.isPress && !isStartDialogue)
         {
             Print(lines);
             Debug.Log("start");

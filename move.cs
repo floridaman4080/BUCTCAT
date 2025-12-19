@@ -21,15 +21,7 @@ public class move : MonoBehaviour
     private bool isGrounded;
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        instance = this;
     }
 
     void Start()
@@ -91,8 +83,8 @@ public class move : MonoBehaviour
     {
         bool IsMove = rb.velocity.x != 0;
         anim.SetBool("IsMove", IsMove);
-        anim.SetBool("IsGrounded", isGrounded);
-        anim.SetFloat("VelocityY", rb.velocity.y);
+        // anim.SetBool("IsGrounded", isGrounded);
+        // anim.SetFloat("VelocityY", rb.velocity.y);
     }
     private void Movement()
     {
@@ -135,7 +127,7 @@ public class move : MonoBehaviour
     {
         yield return new WaitForSeconds(延迟继续);
         canMove = true;
-        Debug.Log("继续运动");
+        // Debug.Log("继续运动");
     }
 
     // 在Scene视图中绘制地面检测范围（方便调试）

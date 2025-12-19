@@ -33,7 +33,7 @@ public class SceneLoad12 : MonoBehaviour
             if (Door.instance != null)
             {
                 Door.instance.isfubeng1 = false;
-                cat.SetActive(false);
+                // cat.SetActive(false);
             }
         }
 

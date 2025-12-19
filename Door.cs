@@ -9,6 +9,7 @@ public class Door : MonoBehaviour
     [SerializeField] private GameObject interactE;
     public bool isfubeng1;
     public static Door instance;
+    [SerializeField] private bool isTouchDoor;
     private void Awake()
     {
         // 每个场景的门都是独立的，不需要跨场景保留
@@ -34,9 +35,10 @@ public class Door : MonoBehaviour
         if (isEntered && interactE != null)
         {
             interactE.SetActive(true);
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) || isTouchDoor)
             {
                 isfubeng1 = true;
+                isTouchDoor = false;
             }
         }
         else
@@ -57,6 +59,11 @@ public class Door : MonoBehaviour
         {
             isEntered = false;
         }
+    }
+    //开门的按钮按下执行touchDoor
+    public void touchDoor()
+    {
+        isTouchDoor = true;
     }
 
 }

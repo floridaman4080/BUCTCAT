@@ -31,16 +31,13 @@ public class 开始游戏 : MonoBehaviour
         {
             StartCoroutine(标题淡出());
         }
-
         // 延迟2秒后停止虚拟相机跟随
         StartCoroutine(延迟停止相机跟随());
-
-
     }
 
     public IEnumerator 延迟停止相机跟随()
     {
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(9.5f);
 
         if (virtualCamera != null)
         {

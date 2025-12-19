@@ -10,24 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5faa688f515efd141bfabe3b3e4d582d, type: 3}
-  m_Name: "\u6821\u9886\u5BFC\u5DE5\u4EBA"
+  m_Name: "\u753B\u5916\u97F3"
   m_EditorClassIdentifier: 
   dialogueId: 
   nodes:
   - nodeId: 0
-    speakerName: "\u6821\u9886\u5BFC"
-    dialogueText: "\u540C\u5FD7\uFF0C\u8FD9\u5317\u4EAC\u5316\u5DE5\u5B66\u9662\u662F\u56FD\u5BB6\u6025\u5EFA\u7684\u5316\u5DE5\u5B66\u5E9C
-      \u2014\u2014 \u54B1\u65B0\u4E2D\u56FD\u7F3A\u5316\u5DE5\u6280\u672F\u4EBA\uFF0C\u8FD9\u6821\u820D\u5F97\u62A2\u7740\u5EFA\u51FA\u6765\uFF01"
+    speakerName: "\u753B\u5916\u97F3"
+    dialogueText: "\u5982\u679C\u8BA9\u4F60\u4E0D\u518D\u6D41\u6D6A\uFF0C\u6BCF\u5929\u90FD\u6709\u9999\u55B7\u55B7\u7684\u7F50\u5934\u5403\uFF0C\u4F60\u613F\u610F\u5417?"
     speakerPortrait: {fileID: 0}
     nodeType: 0
     isCheckpoint: 0
     resumeNodeId: 0
-    onEnterSetBools:
-    - boolName: leadertalkwithpaper
-      setValue: 1
-    onExitSetBools:
-    - boolName: leadertalkwithpaper
-      setValue: 0
+    onEnterSetBools: []
+    onExitSetBools: []
     nextNodeId: 1
     condition:
       conditionType: 0
@@ -44,20 +39,14 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - nodeId: 1
-    speakerName: "\u5DE5\u4EBA"
-    dialogueText: "\u660E\u767D\uFF01\u4ECA\u5929\u5C31\u52A0\u4E2A\u73ED\uFF0C\u5148\u628A\u5730\u57FA\u7684\u6D3B\u513F\u5F80\u524D\u8D76\uFF01"
+    speakerName: "\u5C0F\u732B"
+    dialogueText: "\u53EA\u8981\u4E0D\u997F\u809A\u5B50\uFF0C\u6211\u4EC0\u4E48\u90FD\u80FD\u505A\u7684\u55B5~"
     speakerPortrait: {fileID: 0}
     nodeType: 0
     isCheckpoint: 0
     resumeNodeId: 0
-    onEnterSetBools:
-    - boolName: workertalk
-      setValue: 1
-    onExitSetBools:
-    - boolName: isWindOn
-      setValue: 1
-    - boolName: workertalk
-      setValue: 0
+    onEnterSetBools: []
+    onExitSetBools: []
     nextNodeId: 2
     condition:
       conditionType: 0

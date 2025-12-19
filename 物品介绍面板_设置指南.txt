@@ -1,0 +1,123 @@
+使用物品介绍面板系统 - 设置指南
+================================
+
+## 系统组成
+
+1. **ItemData.cs** - 物品数据结构和数据库
+2. **ItemIntroductionPanel.cs** - 物品介绍面板 UI 脚本
+3. **PickupItem.cs** - 已更新，现在会显示物品介绍
+
+## 设置步骤
+
+### 第1步：创建物品数据库
+
+1. 在Project窗口中右键 → Create → Game → Item Database
+2. 命名为 "ItemDatabase"
+3. **重要**：将其放在 `Assets/Resources/` 文件夹下
+
+### 第2步：配置物品信息
+
+1. 选择创建的 ItemDatabase 资源
+2. 在 Inspector 中设置物品数量和内容
+3. 对每个物品设置以下信息：
+   - **Item Id**: 物品的唯一ID（如 "key", "map" 等）
+   - **Item Name**: 显示的物品名称（如 "钥匙"）
+   - **Description**: 简短描述
+   - **Icon**: 物品图标（可选）
+   - **Introduction**: 详细的物品介绍
+
+### 第3步：创建UI面板
+
+1. 在场景中创建一个新的 UI Canvas（如果还没有的话）
+2. 在 Canvas 下创建一个新的 Panel，命名为 "ItemIntroductionPanel"
+3. 为此Panel添加以下子对象：
+
+```
+ItemIntroductionPanel (Panel)
+├── Background (Image) - 用于美化背景
+├── ItemIcon (Image) - 显示物品图标
+├── ItemNameText (Text) - 显示物品名称
+├── DescriptionText (Text) - 显示物品描述
+├── IntroductionText (Text) - 显示详细介绍
+├── ScrollView (Scroll View) - 用于长文本滚动（可选）
+│   └── Viewport
+│       └── Content
+│           └── IntroductionText
+└── CloseButton (Button) - 关闭按钮
+    └── Text
+```
+
+### 第4步：配置 ItemIntroductionPanel 脚本
+
+1. 选择 ItemIntroductionPanel GameObject
+2. 添加 ItemIntroductionPanel 脚本组件
+3. 在 Inspector 中配置以下内容：
+   - **Item Icon**: 拖放上面创建的 ItemIcon Image
+   - **Item Name Text**: 拖放 ItemNameText 文本组件
+   - **Description Text**: 拖放 DescriptionText 文本组件
+   - **Introduction Text**: 拖放 IntroductionText 文本组件
+   - **Close Button**: 拖放 CloseButton 组件
+   - **Canvas Group**: 自动创建
+   - **Fade Duration**: 0.3 秒（淡入淡出时间）
+   - **Display Duration**: 5 秒（自动关闭时间，0表示需要手动关闭）
+
+### 第5步：在物品上使用
+
+1. 拾取物品的脚本已经更新
+2. 确保物品的 itemName 与 ItemDatabase 中的 Item Id 相匹配
+3. 当玩家拾取物品时，介绍面板会自动显示
+
+## 常见问题
+
+### Q: 面板显示后如何隐藏？
+A: 有两种方式：
+   1. 自动关闭：设置 `Display Duration > 0`，面板会自动关闭
+   2. 手动关闭：玩家点击关闭按钮
+
+### Q: 如何禁用自动关闭？
+A: 将 `Display Duration` 设置为 0，用户必须手动点击关闭
+
+### Q: 面板找不到物品信息？
+A: 检查：
+   1. ItemDatabase 是否在 `Assets/Resources/` 文件夹中
+   2. 物品的 Item Id 是否与 PickupItem 中的 itemName 一致
+
+### Q: 如何自定义面板样式？
+A: ItemIntroductionPanel 使用标准的 Unity UI 组件，可以：
+   1. 修改面板的布局和大小
+   2. 修改文本的字体和颜色
+   3. 添加更多 UI 元素（如图片、按钮等）
+   4. 在 ItemIntroductionPanel.cs 中自定义淡入淡出效果
+
+## 代码调用示例
+
+```csharp
+// 通过物品 ID 显示
+ItemIntroductionPanel.Instance.ShowItem("key");
+
+// 通过 ItemData 显示
+ItemData data = ItemDatabase.Instance.GetItemData("key");
+ItemIntroductionPanel.Instance.ShowItem(data);
+
+// 手动隐藏
+ItemIntroductionPanel.Instance.Hide();
+```
+
+## 脚本说明
+
+### ItemData.cs
+- `ItemData`: 单个物品的数据结构
+- `ItemDatabase`: 物品数据库，管理所有物品信息
+
+### ItemIntroductionPanel.cs
+- `ShowItem(itemId)`: 显示指定ID的物品介绍
+- `ShowItem(itemData)`: 显示指定ItemData的物品介绍
+- `Hide()`: 隐藏面板
+- `FadeTo()`: 淡入淡出效果
+
+### PickupItem.cs (更新)
+- 现在会在拾取物品时调用 `ItemIntroductionPanel.Instance.ShowItem(itemName)`
+
+---
+
+祝你使用愉快！

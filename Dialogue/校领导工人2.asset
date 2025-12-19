@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 5faa688f515efd141bfabe3b3e4d582d, type: 3}
   m_Name: "\u6821\u9886\u5BFC\u5DE5\u4EBA2"
-  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
-  dialogueId: 1
+  m_EditorClassIdentifier: 
+  dialogueId: 
   nodes:
   - nodeId: 0
     speakerName: "\u6821\u9886\u5BFC"
@@ -22,8 +22,12 @@ MonoBehaviour:
     nodeType: 0
     isCheckpoint: 0
     resumeNodeId: 0
-    onEnterSetBools: []
-    onExitSetBools: []
+    onEnterSetBools:
+    - boolName: leadertalkwithoutpaper
+      setValue: 1
+    onExitSetBools:
+    - boolName: leadertalkwithoutpaper
+      setValue: 0
     nextNodeId: 1
     condition:
       conditionType: 0
@@ -46,8 +50,12 @@ MonoBehaviour:
     nodeType: 1
     isCheckpoint: 1
     resumeNodeId: -1
-    onEnterSetBools: []
-    onExitSetBools: []
+    onEnterSetBools:
+    - boolName: workertalk
+      setValue: 1
+    onExitSetBools:
+    - boolName: workertalk
+      setValue: 0
     nextNodeId: -1
     condition:
       conditionType: 0
@@ -70,10 +78,18 @@ MonoBehaviour:
     nodeType: 0
     isCheckpoint: 0
     resumeNodeId: -1
-    onEnterSetBools: []
+    onEnterSetBools:
+    - boolName: leaderwithoutpaper
+      setValue: 0
+    - boolName: workertalk
+      setValue: 1
+    - boolName: haspaperfalse
+      setValue: 1
     onExitSetBools:
     - boolName: "\u627E\u56DE\u7EB8"
       setValue: 1
+    - boolName: workertalk
+      setValue: 0
     nextNodeId: 3
     condition:
       conditionType: 0

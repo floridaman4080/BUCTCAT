@@ -32,9 +32,8 @@ public class 碰撞校史馆 : MonoBehaviour
         if (other.gameObject == player)
         {
             isTouchMuseum = true;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0f);
             //move.instance.canMove = false;
-
         }
     }
 

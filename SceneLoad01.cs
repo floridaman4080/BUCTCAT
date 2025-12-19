@@ -7,6 +7,7 @@ public class SceneLoad01 : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private GameObject cat;
+    [SerializeField] private GameObject dialoguesystem;
     public Animator transition;
     void Start()
     {
@@ -27,8 +28,8 @@ public class SceneLoad01 : MonoBehaviour
             if (碰撞校史馆.instance != null)
             {
                 碰撞校史馆.instance.isTouchMuseum = false;
-                cat.SetActive(false);
-
+                // cat.SetActive(false);
+                dialoguesystem.SetActive(false);
             }
             if (Door.instance != null)
             {
